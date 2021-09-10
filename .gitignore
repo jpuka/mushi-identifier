@@ -1,2 +1,9 @@
 # PyCharm
 .idea/
+
+# Image and JSON data
+data/**/*.JPG
+data/**/*.json
+
+# Notebook checkpoints
+notebooks/.ipynb_checkpoints/
