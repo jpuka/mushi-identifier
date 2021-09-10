@@ -877,6 +877,18 @@ optional = false
 python-versions = ">=3.6"
 
 [[package]]
+name = "plotly"
+version = "5.3.1"
+description = "An open-source, interactive data visualization library for Python"
+category = "main"
+optional = false
+python-versions = ">=3.6"
+
+[package.dependencies]
+six = "*"
+tenacity = ">=6.2.0"
+
+[[package]]
 name = "prometheus-client"
 version = "0.11.0"
 description = "Python client for the Prometheus monitoring system."
@@ -1120,6 +1132,17 @@ optional = false
 python-versions = ">=3.5"
 
 [[package]]
+name = "tenacity"
+version = "8.0.1"
+description = "Retry code until it succeeds"
+category = "main"
+optional = false
+python-versions = ">=3.6"
+
+[package.extras]
+doc = ["reno", "sphinx", "tornado (>=4.5)"]
+
+[[package]]
 name = "tensorboard"
 version = "2.6.0"
 description = "TensorBoard lets you watch Tensors Flow"
@@ -1318,7 +1341,7 @@ python-versions = "*"
 [metadata]
 lock-version = "1.1"
 python-versions = "^3.9"
-content-hash = "48c54202e7d9e104c0a7dc555ea86b1e5b5d1f7f4fe32e6ea8d348f4b5be4054"
+content-hash = "013817e9b09d026f2b4b91ba7d2e25e536a5e9dcaced9ee864f783af546d0cc5"
 
 [metadata.files]
 absl-py = [
@@ -1960,6 +1983,10 @@ pillow = [
     {file = "Pillow-8.3.2-pp37-pypy37_pp73-win_amd64.whl", hash = "sha256:ce651ca46d0202c302a535d3047c55a0131a720cf554a578fc1b8a2aff0e7d96"},
     {file = "Pillow-8.3.2.tar.gz", hash = "sha256:dde3f3ed8d00c72631bc19cbfff8ad3b6215062a5eed402381ad365f82f0c18c"},
 ]
+plotly = [
+    {file = "plotly-5.3.1-py2.py3-none-any.whl", hash = "sha256:c3da90d41cab36722048eaa5d0eee7a286a55982835980e5f183e5536b823f07"},
+    {file = "plotly-5.3.1.tar.gz", hash = "sha256:6598393e898a9c5ae78397f76f07002ec41fd92e5f746d3b9806248d53885643"},
+]
 prometheus-client = [
     {file = "prometheus_client-0.11.0-py2.py3-none-any.whl", hash = "sha256:b014bc76815eb1399da8ce5fc84b7717a3e63652b0c0f8804092c9363acab1b2"},
     {file = "prometheus_client-0.11.0.tar.gz", hash = "sha256:3a8baade6cb80bcfe43297e33e7623f3118d660d41387593758e2fb1ea173a86"},
@@ -2185,6 +2212,10 @@ six = [
 sniffio = [
     {file = "sniffio-1.2.0-py3-none-any.whl", hash = "sha256:471b71698eac1c2112a40ce2752bb2f4a4814c22a54a3eed3676bc0f5ca9f663"},
     {file = "sniffio-1.2.0.tar.gz", hash = "sha256:c4666eecec1d3f50960c6bdf61ab7bc350648da6c126e3cf6898d8cd4ddcd3de"},
+]
+tenacity = [
+    {file = "tenacity-8.0.1-py3-none-any.whl", hash = "sha256:f78f4ea81b0fabc06728c11dc2a8c01277bfc5181b321a4770471902e3eb844a"},
+    {file = "tenacity-8.0.1.tar.gz", hash = "sha256:43242a20e3e73291a28bcbcacfd6e000b02d3857a9a9fff56b297a27afdc932f"},
 ]
 tensorboard = [
     {file = "tensorboard-2.6.0-py3-none-any.whl", hash = "sha256:f7dac4cdfb52d14c9e3f74585ce2aaf8e6203620a864e51faf84988b09f7bbdb"},
