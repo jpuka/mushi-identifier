@@ -39,8 +39,7 @@ def read_json_file(path_json):
 ##
 df_train_ann, df_train_img, df_train_cat, _, _ = read_json_file(path_json_train)
 
-##
-# Turn this cell into a function
+## TODO: turn this cell into a function
 df_train = pd.merge(df_train_ann, df_train_img,
                     how="left", left_on="image_id", right_on="id")
 df_train = pd.merge(df_train, df_train_cat,
@@ -52,3 +51,143 @@ df_train = (df_train
 ##
 # Now all the data is combined
 df_train
+
+##
+# check na's
+df_train.isnull().sum()
+
+# no values marked as NA
+
+## TODO: order in cleaner way, tatti - hapero - rousku
+# define our classes
+# suppilovahvero has wrong scientific name in evira!!
+
+mushi_classes = {"scientific_name":
+                     ["Cantharellus cibarius",
+                      "Craterellus cornucopioides",
+                      "Craterellus tubaeformis",  # wrong in evira, "cantharellus"
+                      "Hydnum repandum",
+                      "Suillus luteus",
+                      "Lactarius rufus",
+                      "Lactarius torminosus",
+                      "Russula paludosa",
+                      "Russula claroflava",
+                      "Russula vinosa",
+                      "Suillus variegatus",
+                      "Hygrophorus camarophyllus",
+                      "Cortinarius caperatus",
+                      "Albatrellus ovinus",
+                      "Morchella spp",
+                      "Tricholoma matsutake",
+                      "Boletus edulis",
+                      "Boletus pinophilus",
+                      "Boletus reticulatus",
+                      "Leccinum versipelle",
+                      "Leccinum aurantiacum",
+                      "Leccinum vulpinum",
+                      "Lactarius trivialis",
+                      "Lactarius utilis",
+                      "Lactarius deterrimus",
+                      "Lactarius deliciosus",
+                      "Russula decolorans"
+                      ],
+                 "finnish_name":
+                     ["keltavahvero",
+                      "mustatorvisieni",
+                      "suppilovahvero",
+                      "vaaleaorakas",
+                      "voitatti",
+                      "kangasrousku",
+                      "karvarousku",
+                      "isohapero",
+                      "keltahapero",
+                      "viinihapero",
+                      "kangastatti",
+                      "mustavahakas",
+                      "kehnäsieni",
+                      "lampaankääpä",
+                      "huhtasieni",
+                      "tuoksuvalmuska",
+                      "herkkutatti",
+                      "männynherkkutatti",
+                      "tammenherkkutatti",
+                      "koivunpunikkitatti",
+                      "haavanpunikkitatti",
+                      "männynpunikkitatti",
+                      "haaparousku",
+                      "kalvashaaparousku",
+                      "kuusenleppärousku",
+                      "männynleppärousku",
+                      "kangashapero"
+                      ]}
+
+df_mushi_classes = pd.DataFrame(mushi_classes)
+
+## TODO: turn into func, in train, mushi, out n_mushi_classes
+# create a dataframe with scientific names and number of each species
+df_train_classes = (df_train["name"]
+                    .value_counts()
+                    .to_frame()
+                    .reset_index()
+                    .rename(columns={"index": "scientific_name", "name": "number"}))
+
+# merge into our classes to see how many classes there are
+df_n_mushi_classes = df_mushi_classes.merge(df_train_classes,
+                                            how="left", on="scientific_name")
+
+##
+df_n_mushi_classes
+
+
+## try to find missing mushrooms manually, so no typos etc
+
+def search_mushi(df_classes, string):
+    """
+    Search image class dataframe for mushroom names.
+
+    :param df_classes: Dataframe with raw data image classes
+    :param string: String to be found
+    :return: Number of found mushroom names
+    """
+    # Create mask
+    name_mask = df_classes["scientific_name"].str.lower().str.contains(
+        string)
+    # Use mask to find entries
+    search_results = df_classes[name_mask]
+
+    return search_results
+
+
+# Hygrophorus camarophyllus, mustavahakas
+search_mushi(df_train_classes, "hygrophorus")
+# not in images
+
+# Albatrellus ovinus, lampaankääpä
+search_mushi(df_train_classes, "albatrellus")
+# not in images
+
+# Morchella spp, huhtasieni
+search_mushi(df_train_classes, "morchella")
+# not in images
+
+# Leccinum aurantiacum, haavanpunikkitatti
+search_mushi(df_train_classes, "leccinum")
+# not in images
+
+# Lactarius utilis, kalvashaaparousku
+search_mushi(df_train_classes, "lactarius")
+# not in images
+
+## plotly (will only work in notebook)
+import plotly.express as px
+
+df_plot_n_mushi_classes = df_n_mushi_classes.dropna()
+
+fig = px.bar(df_plot_n_mushi_classes, x="finnish_name", y="number")
+fig.show()
+
+##
+# TODO:
+#  -draw bar chart, are our categories balanced
+#  -find file list for the classes that are in data
+#  -put all functions to s00_eda_functions
