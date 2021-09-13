@@ -39,18 +39,30 @@ def read_json_file(path_json):
 ##
 df_train_ann, df_train_img, df_train_cat, _, _ = read_json_file(path_json_train)
 
-## TODO: turn this cell into a function
-df_train = pd.merge(df_train_ann, df_train_img,
-                    how="left", left_on="image_id", right_on="id")
-df_train = pd.merge(df_train, df_train_cat,
-                    how="left", left_on="category_id", right_on="id")
-df_train = (df_train
-            .drop(columns=["id", "id_y"])
-            .rename(columns={"id_x": "id"}))
+
+def merge_data(df_annotations, df_images, df_categories):
+    """
+    Merge relevant dataframes created by read_json_file() into as single dataframe.
+
+    :param df_annotations: Dataframe with annotation data
+    :param df_images: Dataframe with image data
+    :param df_categories: Dataframe with category data
+    :return: Merged dataframe with relevant contents
+    """
+    df_merged = pd.merge(df_annotations, df_images,
+                         how="left", left_on="image_id", right_on="id")
+    df_merged = pd.merge(df_merged, df_categories,
+                         how="left", left_on="category_id", right_on="id")
+    df_merged = (df_merged
+                 .drop(columns=["id", "id_y"])
+                 .rename(columns={"id_x": "id"}))
+
+    return df_merged
+
 
 ##
-# Now all the data is combined
-df_train
+# Combine the relevant dataframes
+df_train = merge_data(df_train_ann, df_train_img, df_train_cat)
 
 ##
 # check na's
