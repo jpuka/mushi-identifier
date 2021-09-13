@@ -21,8 +21,8 @@ def read_json_file(path_json):
     """
     Read mushroom json files into pandas dataframes.
 
-    :return: Tuple of pandas dataframes with json contents
     :param path_json: Path to json file
+    :return: Tuple of pandas dataframes with json contents
     """
     with open(path_json) as json_file:
         json_data = json.load(json_file)
@@ -42,7 +42,7 @@ df_train_ann, df_train_img, df_train_cat, _, _ = read_json_file(path_json_train)
 
 def merge_data(df_annotations, df_images, df_categories):
     """
-    Merge relevant dataframes created by read_json_file() into as single dataframe.
+    Merge relevant dataframes created by read_json_file() into a single dataframe.
 
     :param df_annotations: Dataframe with annotation data
     :param df_images: Dataframe with image data
@@ -65,9 +65,12 @@ def merge_data(df_annotations, df_images, df_categories):
 df_train = merge_data(df_train_ann, df_train_img, df_train_cat)
 
 ##
+# check structure
+df_train.info()
+# df_train.describe()
+
 # check na's
 df_train.isnull().sum()
-
 # no values marked as NA
 
 ## TODO: order in cleaner way, tatti - hapero - rousku
@@ -135,20 +138,33 @@ mushi_classes = {"scientific_name":
 
 df_mushi_classes = pd.DataFrame(mushi_classes)
 
-## TODO: turn into func, in train, mushi, out n_mushi_classes
-# create a dataframe with scientific names and number of each species
-df_train_classes = (df_train["name"]
-                    .value_counts()
-                    .to_frame()
-                    .reset_index()
-                    .rename(columns={"index": "scientific_name", "name": "number"}))
-
-# merge into our classes to see how many classes there are
-df_n_mushi_classes = df_mushi_classes.merge(df_train_classes,
-                                            how="left", on="scientific_name")
 
 ##
-df_n_mushi_classes
+def create_evira_class_dataframe(df_merged, df_mushi_classes):
+    """
+    Create dataframe with Evira's recommended mushroom species and the counts
+    of each species.
+
+    :param df_merged: Dataframe with annotation, image and category data
+    :param df_mushi_classes: Dataframe with Evira mushroom species names
+    :return: A dataframe with Evira mushroom names and counts.
+    """
+    # Create a dataframe with the scientific name and count of every species
+    df_all_classes = (df_merged["name"]
+                      .value_counts()
+                      .to_frame()
+                      .reset_index()
+                      .rename(columns={"index": "scientific_name", "name": "number"}))
+
+    # Modify into a dataframe with only Evira species
+    df_evira_mushi_classes = df_mushi_classes.merge(df_all_classes,
+                                                    how="left", on="scientific_name")
+
+    return df_evira_mushi_classes
+
+
+##
+df_evira_mushies = create_evira_class_dataframe(df_train, df_mushi_classes)
 
 
 ## try to find missing mushrooms manually, so no typos etc
