@@ -71,6 +71,11 @@ The software can aid you, if you carry a mushroom book with you and verify stuff
 
 ## TODO
 
+### README
+
+* Polish text
+* Make mushroom images and titles in GIMP: insert single image to markdown
+
 ### EDA
 
 * Visualize a couple of images with labels to get an idea for the data quality
