@@ -1,11 +1,15 @@
 # The purpose of this script is to transfer images to the interim folder. Only
 # non-corrupted images will be transferred.
 # TODO:
-#  -add logic for validation data
+#  -add logic for test data
+#  -transfer functions to s01_make_interim_funcs
 #  -turn some cells into functions, e.g. transfer
 #  -make tensorflow check function prettier, document
 #  -add external data for missing/lacking classes
 #  -make paths relative to project repository, check best practices
+
+# We are mixing the predefined "train" and "validation" images here,
+# since the validation set is way too small. We will do a better split later.
 
 ## Import libraries
 import os
@@ -50,36 +54,52 @@ df_valid_ann, df_valid_img, df_valid_cat, _, _ = read_json_file(path_json_valid)
 
 # Combine relevant metadata into single dataframes
 df_train = merge_data(df_train_ann, df_train_img, df_train_cat)
-df_validate = merge_data(df_valid_ann, df_valid_img, df_train_cat)
+df_valid = merge_data(df_valid_ann, df_valid_img, df_train_cat)
 
 # Import classes
 df_mushroom_classes = pd.read_csv(path_mushroom_classes)
 
-## Create dataframe with correct classes and filenames
 
-# Create a mask for the classes
-train_class_mask = df_train["name"].isin(df_mushroom_classes["scientific_name"])
+##
+def create_path_class_lists(df, df_classes):
+    """
+    Create two lists from a metadata dataframe: image file paths and respective
+    image classes. This is a pre-step for transferring the files to interim.
 
-# Select data rows with the chosen classes
-df_train_classes = df_train[train_class_mask]
+    :param df: Dataframe with metadata (annotation, image, category)
+    :param df_classes: Dataframe with mushroom classes
+    :return: File path and class for each image
+    """
+    # Create a mask for the classes
+    class_mask = df["name"].isin(df_classes["scientific_name"])
 
-# Select relevant information
-df_train_filenames = df_train_classes.loc[:, ["id", "file_name", "name"]]
+    # Select data rows with the chosen classes
+    df_classes = df[class_mask]
 
-## Select filenames and class names
+    # Select filename and class information
+    df_filenames = df_classes.loc[:, ["id", "file_name", "name"]]
 
-# Save filenames to list
-train_file_paths = df_train_filenames["file_name"].to_list()
+    # Save filenames to list
+    image_paths = df_filenames["file_name"].to_list()
 
-# Save class names to list. There is no data for all the (Evira) classes,
-# so we will work with what we have. Make lowercase, add an underscore to make
-# names more filesystem friendly
-train_class_names = (df_train_filenames["name"]
+    # Save classes to list. Make lowercase, add an underscore to make
+    # names more filesystem friendly
+    image_classes = (df_filenames["name"]
                      .str.replace(" ", "_")
                      .str.lower()
                      .to_list())
 
-## Create interim folder structure
+    return image_paths, image_classes
+
+
+##
+# File paths and classes as lists
+train_image_paths, train_image_classes = create_path_class_lists(df_train,
+                                                                 df_mushroom_classes)
+valid_image_paths, valid_image_classes = create_path_class_lists(df_valid,
+                                                                 df_mushroom_classes)
+
+## Create interim folder structure TODO: to function
 unique_classes = (df_mushroom_classes["scientific_name"]
                   .str.replace(" ", "_")
                   .str.lower()
@@ -88,27 +108,9 @@ unique_classes = (df_mushroom_classes["scientific_name"]
 for class_name in unique_classes:
     os.makedirs(path_interim_data_dir / class_name, exist_ok=True)
 
-## Transfer files
-
-# The directory numbers don't correspond to any metadata
-
-# Copy non-corrupted files to interim directory
-for (file_path, class_name) in zip(train_file_paths, train_class_names):
-    # Create path for the raw image
-    path_raw_image = path_raw_dir / file_path
-    # Find filename from the file path
-    filename_raw_image = pathlib.Path(file_path).parts[-1]
-    # Create path for the interim image
-    path_interim_image = path_interim_data_dir / class_name / filename_raw_image
-
-    # Check for files that tensorflow cannot read
-    if check_not_corrupted(path_raw_image):
-        # Copy valid files to the interim data directory
-        shutil.copyfile(src=path_raw_image,
-                        dst=path_interim_image)
-
 ##
 import tensorflow as tf
+
 
 # This function is slow, but only reliable way I found to check if images look
 # corrupt to tensorflow
@@ -120,3 +122,37 @@ def check_not_corrupted(file_path):
     except ValueError as e:
         print(f"Bad file: {file_path}, \nError: {e}")
         return False
+
+
+##
+
+def transfer_to_interim(image_paths, image_classes, path_raw_dir, path_interim_data_dir):
+    """
+    Transfer images from raw directory into interim. During the transfer, each image
+    is checked for corruption and only non-corrupted images are transferred.
+
+    :param image_paths: List of raw image paths
+    :param image_classes: List of raw image classes
+    :param path_raw_dir: Path to raw directory
+    :param path_interim_data_dir: Path to interim directory
+    """
+    # Copy non-corrupted files to interim directory
+    for (image_path, image_class) in zip(image_paths, image_classes):
+        # Create path for the raw image
+        path_raw_image = path_raw_dir / image_path
+        # Find filename from the file path
+        filename_raw_image = pathlib.Path(image_path).parts[-1]
+        # Create path for the interim image
+        path_interim_image = path_interim_data_dir / image_class / filename_raw_image
+
+        # Check for files that tensorflow cannot read
+        if check_not_corrupted(path_raw_image):
+            # Copy valid files to the interim data directory
+            shutil.copyfile(src=path_raw_image,
+                            dst=path_interim_image)
+
+
+## Transfer training and validation images to the same folder
+# Train and validation images are mixed
+transfer_to_interim(train_image_paths, train_image_classes, path_raw_dir, path_interim_data_dir)
+transfer_to_interim(valid_image_paths, valid_image_classes, path_raw_dir, path_interim_data_dir)
