@@ -2,15 +2,25 @@
 
 ## Introduction
 
-Which mushroom is this?
-
-<img src="docs/images/example_russula_claroflava.JPG" alt="russula claroflava - keltahapero" width="200"/>
-
-How about this?
-
-<img src="docs/images/example_lactarius_torminosus.jpg" alt="lactarius torminosus - karvarousku" width="200"/>
+<table><tr>
+<td> 
+  <p align="center" style="padding: 10px">
+    <p>Which mushroom is this?</p>
+    <img alt="Forwarding" src="docs/images/example_russula_claroflava.jpg" height="250">
+  </p> 
+</td>
+<td> 
+  <p align="center">
+    <p>How about this one?</p>
+    <img alt="Routing" src="docs/images/example_lactarius_torminosus.jpg" height="250">
+  </p> 
+</td>
+</tr></table>
 
 Can you eat either of them?
+
+<br>
+
 
 If you have ever wandered around in the autumn forest surrounded by fungi food, but unable to deduce which mushroom is delicious and which kills you, this tool might be just for you!
 
@@ -34,6 +44,23 @@ The deployment is done as a mobile app, since mushroom places tend to be low con
 
 The packaging / dependency manager is [Poetry](https://python-poetry.org/), since it is modern and practical and follows the build system standard set by [PEP-517](https://www.python.org/dev/peps/pep-0517/).
 
+## Folder structure
+
+```bash
+├── data
+│   ├── 00_external        # Web-scraped images, mushroom classes
+│   ├── 00_raw             # Danish dataset: images and metadata
+│   ├── 01_interim         # Clean, non-corrupted data from external & raw
+│   └── 02_processed       # Structured model-ready data
+├── docs
+│   └── images             # Images for this README
+├── models                 # Saved models
+├── notebooks              # Jupyter notebooks (EDA, model presentation)
+└── src
+    ├── data               # Python code for data manipulation (scraping, cleaning, loading)
+    └── model              # Python code for model training and predictions
+```
+
 ## Disclaimer
 
 Please don't fully trust any image recognition software for classifying mushrooms. Models such as the one in mushi-identifier can help you, but they cannot replace an experienced friend and a recent mushroom book.
@@ -42,9 +69,12 @@ Mushrooms often have features you can only learn by turning, peeling, cutting an
 
 The software can aid you, if you carry a mushroom book with you and verify stuff.
 
-## Folder structure
-
 ## TODO
+
+### README
+
+* Polish text
+* Make mushroom images and titles in GIMP: insert single image to markdown
 
 ### EDA
 
