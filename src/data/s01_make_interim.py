@@ -1,15 +1,14 @@
 # The purpose of this script is to transfer images to the interim folder. Only
 # non-corrupted images will be transferred.
+
+# The script combines the external and raw images to interim, where there is a
+# a folder for each species
+
 # TODO:
-#  -add logic for test data
+#  -add logic for test data - possibly own directory in interim?
 #  -transfer functions to s01_make_interim_funcs
-#  -turn some cells into functions, e.g. transfer
-#  -make tensorflow check function prettier, document
 #  -add external data for missing/lacking classes
 #  -make paths relative to project repository, check best practices
-
-# We are mixing the predefined "train" and "validation" images here,
-# since the validation set is way too small. We will do a better split later.
 
 ## Import libraries
 import os
@@ -18,141 +17,178 @@ import shutil
 
 import pandas as pd
 
-from src.data.s00_eda_functions import read_json_file, merge_data
-
 ## Set paths
 # TODO: make relative to project repository, check best practices
 
-# External data
+# External data path
 path_external_dir = pathlib.Path(
     "/home/jpe/Documents/python_projects/mushi-identifier/data/00_external/")
 
-# Raw data
+# Raw data path
 path_raw_dir = pathlib.Path(
     "/home/jpe/Documents/python_projects/mushi-identifier/data/00_raw/")
 
-# Interim data
+# Interim data path
 path_interim_dir = pathlib.Path(
     "/home/jpe/Documents/python_projects/mushi-identifier/data/01_interim/"
 )
 
-# Create path for interim image directory
-path_interim_data_dir = path_interim_dir / "images_noncorrupt"
+# Create path to raw image directory
+path_raw_image_dir = path_raw_dir / "DF20"
 
-# Training and validation metadata
-path_json_train = path_raw_dir / "train.json"
-path_json_valid = path_raw_dir / "val.json"
+# Create path to interim image directory
+path_interim_image_dir = path_interim_dir / "images_per_class"
+
+# Training and validation image metadata
+path_meta_train_val = path_raw_dir / "DF20-train_metadata_PROD.csv"
+
+# Test image metadata
+path_meta_test = path_raw_dir / "DF20-public_test_metadata_PROD.csv"
 
 # Classes for the recognition task - chosen Evira mushroom species
 path_mushroom_classes = path_external_dir / "evira_species.csv"
 
-## Import and setup metadata
+## Load metadata and classes
 
-# Read training and validation metadata from json files
-df_train_ann, df_train_img, df_train_cat, _, _ = read_json_file(path_json_train)
-df_valid_ann, df_valid_img, df_valid_cat, _, _ = read_json_file(path_json_valid)
+# Load training and validation image metadata
+df_meta_train_val_raw = pd.read_csv(path_meta_train_val)
 
-# Combine relevant metadata into single dataframes
-df_train = merge_data(df_train_ann, df_train_img, df_train_cat)
-df_valid = merge_data(df_valid_ann, df_valid_img, df_train_cat)
+# Load test image metadata
+df_meta_test_raw = pd.read_csv(path_meta_test)
 
-# Import classes
+# Import mushroom classes
 df_mushroom_classes = pd.read_csv(path_mushroom_classes)
 
 
-##
-def create_path_class_lists(df, df_classes):
+def filter_path_class_metadata(df_meta_raw, df_classes):
     """
-    Create two lists from a metadata dataframe: image file paths and respective
-    image classes. This is a pre-step for transferring the files to interim.
+    Search raw metadata for image filenames of classes of interest.
+    This is a pre-step for transferring the images to the interim folder.
 
-    :param df: Dataframe with metadata (annotation, image, category)
+    :param df_meta_raw: Dataframe with raw metadata
     :param df_classes: Dataframe with mushroom classes
-    :return: File path and class for each image
+    :return: Dataframe with filename and class of each image
     """
-    # Create a mask for the classes
-    class_mask = df["name"].isin(df_classes["scientific_name"])
 
-    # Select data rows with the chosen classes
-    df_classes = df[class_mask]
+    # Choose columns of interest. There is a lot of interesting metadata, but
+    # we are only interested in species and image paths.
+    df_meta = df_meta_raw.loc[:, ["genus", "specificEpithet", "image_path"]]
 
-    # Select filename and class information
-    df_filenames = df_classes.loc[:, ["id", "file_name", "name"]]
+    # Rename image_path, since it contains filenames
+    df_meta.rename(columns={"image_path": "image_filename"}, inplace=True)
 
-    # Save filenames to list
-    image_paths = df_filenames["file_name"].to_list()
+    # Construct the species name (in the raw metadata "scientificName" has additional
+    # characters and "species" has NaNs)
+    df_meta["species"] = df_meta["genus"] + " " + df_meta["specificEpithet"]
 
-    # Save classes to list. Make lowercase, add an underscore to make
-    # names more filesystem friendly
-    image_classes = (df_filenames["name"]
-                     .str.replace(" ", "_")
-                     .str.lower()
-                     .to_list())
+    # Drop the columns used for constructing the species name
+    df_meta = df_meta.drop(columns=["genus", "specificEpithet"])
 
-    return image_paths, image_classes
+    # Choose rows with species that correspond to our classes
+    mask_classes = df_meta["species"].isin(df_classes["species"])
+    df_meta = df_meta[mask_classes]
 
+    # Make the species names more file-system friendly, since they will be
+    # used to match folders later
+    df_meta["species"] = (df_meta["species"]
+                          .str.replace(" ", "_")
+                          .str.lower())
 
-##
-# File paths and classes as lists
-train_image_paths, train_image_classes = create_path_class_lists(df_train,
-                                                                 df_mushroom_classes)
-valid_image_paths, valid_image_classes = create_path_class_lists(df_valid,
-                                                                 df_mushroom_classes)
+    return df_meta
 
-## Create interim folder structure TODO: to function
-unique_classes = (df_mushroom_classes["scientific_name"]
-                  .str.replace(" ", "_")
-                  .str.lower()
-                  .to_list())
-
-for class_name in unique_classes:
-    os.makedirs(path_interim_data_dir / class_name, exist_ok=True)
 
 ##
-import tensorflow as tf
+df_meta_train_val = filter_path_class_metadata(df_meta_train_val_raw, df_mushroom_classes)
+df_meta_test = filter_path_class_metadata(df_meta_test_raw, df_mushroom_classes)
+
+
+## Create interim folder structure
+def create_interim_folders(df_classes, path_interim_image_dir):
+    """
+    Create interim folder structure: each class has a folder
+
+    :param df_classes: Dataframe with mushroom classes
+    :param path_interim_image_dir: Path to interim image directory
+    """
+
+    # Create a filesystem-friendly folder name for each class
+    interim_folder_names = (df_classes["species"]
+                            .str.replace(" ", "_")
+                            .str.lower())
+
+    # Create the folder structure
+    for name in interim_folder_names:
+        path_new_dir = path_interim_image_dir / name
+        # If the folder structure does not yet exist
+        if not path_new_dir.is_dir():
+            print(f"Creating interim directory: {name}")
+            os.makedirs(path_new_dir)
+
+
+create_interim_folders(df_mushroom_classes, path_interim_image_dir)
+
+##
+# import tensorflow as tf
+# from tensorflow.python.framework.errors_impl import InvalidArgumentError
 
 
 # This function is slow, but only reliable way I found to check if images look
 # corrupt to tensorflow
-def check_not_corrupted(file_path):
+def verify_not_corrupted(image_path):
+    """
+    Check that the input image can be imported by tensorflow.
+
+    :param image_path: Path to image to be checked
+    :return: True if image is ok, False if image is corrupted
+    """
+
+    # TODO: Rethink - currently not used, possibly leaks memory
+    # Attempt to read the image file to a tensor. This is not the fastest or
+    # cleanest approach, but in practice I have found it more reliable at
+    # finding bizarre corruptions than other methods (e.g. PIL, cv2). Note, that
+    # this does not catch the "Corrupt JPEG data" message, since it is technically
+    # not an error (see https://github.com/tensorflow/models/issues/2194).
     try:
-        img_tf = tf.io.read_file(str(file_path))
+        img_tf = tf.io.read_file(str(image_path))
         tf.image.decode_jpeg(img_tf, channels=3)
         return True
-    except ValueError as e:
-        print(f"Bad file: {file_path}, \nError: {e}")
+    except (ValueError, InvalidArgumentError) as e:
+        print(f"Bad file: {image_path}, \nError: {e}")
         return False
 
 
 ##
 
-def transfer_to_interim(image_paths, image_classes, path_raw_dir, path_interim_data_dir):
+def transfer_raw_to_interim(df_meta, path_raw_image_dir, path_interim_image_dir):
     """
     Transfer images from raw directory into interim. During the transfer, each image
     is checked for corruption and only non-corrupted images are transferred.
 
-    :param image_paths: List of raw image paths
-    :param image_classes: List of raw image classes
+    :param df_meta: Dataframe with filename and class of each image
     :param path_raw_dir: Path to raw directory
-    :param path_interim_data_dir: Path to interim directory
+    :param path_interim_image_dir: Path to interim directory
     """
-    # Copy non-corrupted files to interim directory
-    for (image_path, image_class) in zip(image_paths, image_classes):
+    # Copy image files to interim directory
+    for j, (image_name, image_class) in enumerate(
+            zip(df_meta["image_filename"], df_meta["species"])):
         # Create path for the raw image
-        path_raw_image = path_raw_dir / image_path
-        # Find filename from the file path
-        filename_raw_image = pathlib.Path(image_path).parts[-1]
+        path_raw_image = path_raw_image_dir / image_name
         # Create path for the interim image
-        path_interim_image = path_interim_data_dir / image_class / filename_raw_image
+        path_interim_image = path_interim_image_dir / image_class / image_name
 
+        # TODO: Remove or rethink
         # Check for files that tensorflow cannot read
-        if check_not_corrupted(path_raw_image):
-            # Copy valid files to the interim data directory
-            shutil.copyfile(src=path_raw_image,
-                            dst=path_interim_image)
+        # if verify_not_corrupted(path_raw_image):
+
+        # Print progress
+        if ((j + 1) % 500 == 0):
+            print(f"Transferring file {j + 1} / {len(df_meta)}")
+
+        # Copy files to the interim data directory
+        shutil.copyfile(src=path_raw_image,
+                        dst=path_interim_image)
 
 
-## Transfer training and validation images to the same folder
-# Train and validation images are mixed
-transfer_to_interim(train_image_paths, train_image_classes, path_raw_dir, path_interim_data_dir)
-transfer_to_interim(valid_image_paths, valid_image_classes, path_raw_dir, path_interim_data_dir)
+##
+transfer_raw_to_interim(df_meta_train_val, path_raw_image_dir, path_interim_image_dir)
+# transfer_raw_to_interim(df_meta_test)
