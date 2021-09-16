@@ -60,11 +60,11 @@ def create_evira_class_dataframe(df_merged, df_mushi_classes):
                       .value_counts()
                       .to_frame()
                       .reset_index()
-                      .rename(columns={"index": "scientific_name", "name": "count"}))
+                      .rename(columns={"index": "species", "name": "count"}))
 
     # Modify into a dataframe with only Evira species
     df_evira_mushi_classes = df_mushi_classes.merge(df_all_classes,
-                                                    how="left", on="scientific_name")
+                                                    how="left", on="species")
 
     return df_all_classes, df_evira_mushi_classes
 
@@ -78,7 +78,7 @@ def search_mushi(df_classes, string):
     :return: Number of found mushroom names
     """
     # Create mask
-    name_mask = df_classes["scientific_name"].str.lower().str.contains(
+    name_mask = df_classes["species"].str.lower().str.contains(
         string)
     # Use mask to find entries
     search_results = df_classes[name_mask]
