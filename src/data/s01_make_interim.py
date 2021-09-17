@@ -46,7 +46,7 @@ path_meta_train_val = path_raw_dir / "DF20-train_metadata_PROD.csv"
 path_meta_test = path_raw_dir / "DF20-public_test_metadata_PROD.csv"
 
 # Classes for the recognition task - chosen Evira mushroom species
-path_mushroom_classes = path_external_dir / "evira_species.csv"
+path_mushroom_classes = path_external_dir / "mushroom_classes.csv"
 
 ## Load metadata and classes
 
