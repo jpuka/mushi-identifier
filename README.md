@@ -17,19 +17,19 @@
 </td>
 </tr></table>
 
-Can you eat either of them?
+Can you eat either of them? TODO: Make mushroom images and titles a single image in GIMP
 
 <br>
 
-Have you ever wandered around in the beautiful autumn forest looking for fungi food, but ended up spending most of your time staring at a book while getting inhabited by moose flies. If so, this tool might be just for you! It will help you deduce which mushroom is delicious and which kills you, while allowing you to spend more time marvelling the nature around you.
+Have you ever wandered around in the beautiful autumn forest looking for fungi food, but ended up spending most of your time staring at a book while getting inhabited by deer flies. If so, this tool might be just for you! It will help you deduce which mushroom is delicious and which kills you, while allowing you to spend more time marvelling the nature around you.
 
-Mushi-identifier is a smartphone app, that allows you to take a photo of a mushroom. The app recognizes the mushroom species in the image and returns the name of the mushroom with a confidence score.
+Mushi-identifier is a smartphone app that recognizes mushroom species from photos. After receiving a photo, it returns the name of the mushroom with a confidence score.
 
 The app should be used together with a recent mushroom book. If you find a mushroom you do not know, take a photo for the app and it will tell you what it looks like. Then, you can quickly find the mushroom in the book glossary instead of scrolling through endless pages looking for images of it.
 
-The app is targeted at novice mushroom hunters, and for now it only identifies the edible mushrooms recommended by the [Finnish food authority](https://www.ruokavirasto.fi/henkiloasiakkaat/tietoa-elintarvikkeista/elintarvikeryhmat/ruokasienet/suositeltavat-ruokasienet/). These are common and easy to verify with a book even for beginners.
+The app is targeted at novice mushroom hunters, and for now it only seeks to identify the edible mushrooms recommended by the [Finnish food authority](https://www.ruokavirasto.fi/henkiloasiakkaat/tietoa-elintarvikkeista/elintarvikeryhmat/ruokasienet/suositeltavat-ruokasienet/). These species are common and easy to verify with a book even for beginners.
 
-*NOTE*: This project is a work-in-progress. Check the TODO-section below for a quick overview of the development stage.
+*NOTE: This project is a work-in-progress. Check the [Roadmap](https://github.com/jpusa/mushi-identifier#roadmap) below for a quick* overview of the development stage.
 
 ## Motivation
 
@@ -43,13 +43,23 @@ This can make to help you identify mushrooms, especially if you really have no i
 
 What makes this special is that it focuses on common species in Finland. Furthermore, the base training dataset is fresh and robust.
 
+*Write some existing apps here. This is a project focusing on Finnish mushrooms. This is a practice project.*
+
+## Disclaimer
+
+Mushroom identification techniques include feeling, peeling, cutting and smelling the fungi. Furthermore, the habitat, nearby tree species and the time of the year also affect the identification. Features like these are difficult or impossible to teach to an image recognition software.
+
+Therefore, please don't blindly trust any image recognition application for classifying mushrooms. Apps such as mushi-identifier can be helpful, but they cannot replace an experienced friend and/or a recent mushroom book. Even a well-trained model will sometimes make false predictions.
+
+That being said, as long as you use the mushi-identifier together with some scepticism and a good mushroom book, it should save you a lot of time and make your fungi trips fun and pleasant.
+
 ## Technical details
 
 ### Data
 
-We are using the Danish Fungi 2020. Very neat, but unbalanced.
+I am using the [Danish Fungi 2020 dataset](https://arxiv.org/abs/2103.10107) (preprint paper). Very neat, but unbalanced / long-tailed. Good, more realistic dataset, since uniformly distributed data is a rarity anyway.
 
-We started the project with another Danish dataset and were planning to complement it with scraped data. However, now this is set as external data and used to add images to missing classes.
+I started the project with another Danish dataset and were planning to complement it with scraped data. However, now this is set as external data and used to add images to missing classes. [iNaturalist](https://github.com/visipedia/inat_comp/tree/master/2017#Data) dataset.
 
 ### Model
 
@@ -68,9 +78,9 @@ The packaging / dependency manager is [Poetry](https://python-poetry.org/), sinc
 ```bash
 ├── data
 │   ├── 00_external        # Web-scraped images, mushroom classes
-│   ├── 00_raw             # Danish dataset: images and metadata
-│   ├── 01_interim         # Clean, non-corrupted data from external & raw
-│   └── 02_processed       # Structured model-ready data
+│   ├── 00_raw             # Danish Fungi 2020 dataset: images and metadata
+│   ├── 01_interim         # Non-corrupted species-wise data combined from external & raw
+│   └── 02_processed       # Model-ready data split into train/validation/test from interim
 ├── docs
 │   └── images             # Images for this README
 ├── models                 # Saved models
@@ -80,56 +90,69 @@ The packaging / dependency manager is [Poetry](https://python-poetry.org/), sinc
     └── model              # Python code for model training and predictions
 ```
 
-## Disclaimer
+## Roadmap
 
-Please don't fully trust any image recognition software for classifying mushrooms. Models such as the one in mushi-identifier can help you, but they cannot replace an experienced friend and a recent mushroom book.
+This simple roadmap provides a quick overview of the project development stage. To keep it light, I have brushed out most detail adding only the major steps. The roadmap will evolve as new ideas come up.
 
-Mushrooms often have features you can only learn by feeling, peeling, cutting and smelling them. Things like this are difficult or impossible to teach to image recognition software. Also, habitat and time of year matters.
-
-The software can aid you, if you carry a mushroom book with you and verify stuff.
-
-## TODO
-
-### README
-
-* Polish text
-* Make mushroom images and titles in GIMP: insert single image to markdown
-
-### EDA
-
-* Visualize a couple of images with labels to get an idea for the data quality
+(I could write this in GitHub Projects, but I find them clunky, hard to read and generally overkill for this project. For a larger project with multiple developers I would use a proper project management environment.)
 
 ### Data
 
-* Create a script that uses tf.keras.utils.get_file to get data
-* Start with the classes with 100+ examples, add more classes later
-* Add fig show in notebook
-* Rethink if "interim" is needed
-* Visualize validation data in notebook (imshow)
-* If unbalanced, scrape for more data
-  * Add the scraped data to external, with same ids and folder styles as raw
-  * Scraped data should be of similar distribution as raw - non-professional photos
-  * Make sure to do a balanced division for the external data into train, validation, test 
-* Resplit train-validation (-test?) data, only 3 validation mushrooms per class now
-* Scrape for more training data [long-term]
-* Add more mushroom categories
+**Base steps**
+- [x] Review literature and find a solid raw (base) dataset
+- [x] Do an EDA on the raw dataset
+- [x] Verify non-corruption and transfer *raw* data to *interim*
+- [x] Split (train/validation/test) and transfer *interim* data to *processed*
+- [x] Import *processed* data to tensorflow and start developing model
+
+**Additional steps**
+
+- [ ] Create a script for loading raw data with tf.keras.utils.get_file (add a md5sum check)
+- [ ] Scrape *external* data from [iNaturalist](https://www.inaturalist.org/), [Danmarks Svampeatlas](https://svampe.databasen.org/), [Luontoportti](https://luontoportti.com/) and/or [GBIF](https://www.gbif.org/).
+  - [ ] Scrape data for mushroom species missing from raw dataset
+      - [ ] Albatrellus ovinus (*lampaankääpä*)
+      - [ ] Hygrophorus camarophyllus (*mustavahakas*)
+      - [ ] Morchella spp. (*huhtasienet*, many variants)
+      - [ ] Russula vinosa (*viinihapero*)
+      - [ ] Tricholoma matsutake (*tuoksuvalmuska*)
+  - [ ] Scrape additional data for species with a low image count in the raw dataset
+- [ ] Do EDA on the scraped external datasets
+- [ ] Verify and transfer *external* data to *interim* mixing it with the raw data
+- [ ] Split (train/validation/test) and transfer mixed *interim* data to *processed*
+- [ ] Import *processed* data to tensorflow and use it to improve the model
+
 
 ### Model
 
-* Search Arxiv for mushroom identifiers -> what model types did others use.
-* Estimate a random baseline to compare model accuracy to
-* Implement k-fold cross validation instead of standard data split to increase the reliability of validation scores.
-  Consider doing iterated k-fold with shuffling, if enough computational resources. If we do hyperparameter tuning, this might be needed in any case to not overfit to the validation data.
-* Based on the model prediction, present questions to the user ("if you cut it, does it bleed white? y/n") to verify the species
+**Base steps**
+
+- [ ] Review literature and make initial modelling choices:
+  - [ ] Architecture
+  - [ ] Metrics
+  - [ ] Baseline performance
+  - [ ] Hyperparameters  
+  * Read this [paper](https://openaccess.thecvf.com/content_WACV_2020/papers/Sulc_Fungi_Recognition_A_Practical_Use_Case_WACV_2020_paper.pdf) 
+- [ ] Build an initial model
+- [ ] Tune hyperparameters
+- [ ] Build, train and save a better model
+
+**Additional steps**
+ 
+- [ ] Implement k-fold cross validation instead of standard data split to increase the reliability of validation scores.
+- [ ] Consider iterated k-fold with shuffling, if enough computational resources. If we do hyperparameter tuning, this might be needed in any case to not overfit to the validation data.
+- [ ] Consider adding macro-averaged F1 score to metrics (by subclassing), since it works well for long-tailed class distributions [Fungi paper].
+- [ ] Based on the model prediction, present yes/no-questions to the user ("If you cut the bottom, does it bleed white? y/n") to verify the species.
 
 ### Deployment
 
-* Study cybersecurity best practices on how to deploy the model on a web server - allowing the user to upload images.
-* Use Tensorflow lite to deploy model on smartphone, due to usage on low-connectivity environments
-* Do weight pruning and quantization to optimize the model before deployment on smartphone.
+**Base steps**
 
-Put this into issues?
+- [ ] Prepare a Dockerfile so that the project can be easily transferred to other systems
+- [ ] Do weight pruning and quantization to optimize the model
+- [ ] Transfer the model into a Tensorflow lite model
+- [ ] Develop the mobile application and deploy it on a smartphone
 
-- [x] Mushi 1
-- [ ] Mushi 2
-- [ ] Mushi 3
+**Additional steps**
+
+- [ ] Create a simple web application with Flask + REST api
+- [ ] Study cybersecurity best practices and reveal the web app to the internet
