@@ -1,5 +1,13 @@
 # Mushi identifier
 
+   * [Introduction](#introduction)
+   * [Motivation](#motivation)
+   * [Installation](#installation)
+   * [Technical details](#technical-details)
+   * [Project structure](#project-structure)
+   * [Roadmap](#roadmap)
+
+
 ## Introduction
 
 <table><tr>
@@ -29,7 +37,7 @@ The app should be used together with a recent mushroom book. If you find a mushr
 
 The app is targeted at novice mushroom hunters, and for now it only seeks to identify the edible mushrooms recommended by the [Finnish food authority](https://www.ruokavirasto.fi/henkiloasiakkaat/tietoa-elintarvikkeista/elintarvikeryhmat/ruokasienet/suositeltavat-ruokasienet/). These species are common and easy to verify with a book even for beginners.
 
-*NOTE: This project is a work-in-progress. Check the [Roadmap](https://github.com/jpusa/mushi-identifier#roadmap) below for a quick* overview of the development stage.
+*NOTE: This project is a work-in-progress. Check the [Roadmap](#roadmap) below for a quick* overview of the development stage.
 
 ## Motivation
 
@@ -45,13 +53,17 @@ What makes this special is that it focuses on common species in Finland. Further
 
 *Write some existing apps here. This is a project focusing on Finnish mushrooms. This is a practice project.*
 
-## Disclaimer
+#### Disclaimer
 
 Mushroom identification techniques include feeling, peeling, cutting and smelling the fungi. Furthermore, the habitat, nearby tree species and the time of the year also affect the identification. Features like these are difficult or impossible to teach to an image recognition software.
 
 Therefore, please don't blindly trust any image recognition application for classifying mushrooms. Apps such as mushi-identifier can be helpful, but they cannot replace an experienced friend and/or a recent mushroom book. Even a well-trained model will sometimes make false predictions.
 
 That being said, as long as you use the mushi-identifier together with some scepticism and a good mushroom book, it should save you a lot of time and make your fungi trips fun and pleasant.
+
+## Installation
+
+Docker blabla
 
 ## Technical details
 
@@ -73,7 +85,7 @@ The deployment is done as a mobile app, since mushroom places tend to be low con
 
 The packaging / dependency manager is [Poetry](https://python-poetry.org/), since it is modern and practical and follows the build system standard set by [PEP-517](https://www.python.org/dev/peps/pep-0517/).
 
-## Folder structure
+## Project structure
 
 ```bash
 ├── data
