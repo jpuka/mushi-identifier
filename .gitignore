@@ -3,6 +3,7 @@
 
 # Image and JSON data
 data/**/*.JPG
+data/**/*.jpg
 data/**/*.json
 
 # Notebook checkpoints
