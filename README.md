@@ -1,10 +1,10 @@
-# Mushi identifier
+# Mushi-identifier
 
    * [Introduction](#introduction)
    * [Motivation](#motivation)
    * [Installation](#installation)
-   * [Technical details](#technical-details)
    * [Project structure](#project-structure)
+   * [Technical details](#technical-details)
    * [Roadmap](#roadmap)
 
 
@@ -35,7 +35,7 @@ Mushi-identifier is a smartphone app that recognizes mushroom species from photo
 
 The app should be used together with a recent mushroom book. If you find a mushroom you do not know, take a photo for the app and it will tell you what it looks like. Then, you can quickly find the mushroom in the book glossary instead of scrolling through endless pages looking for images of it.
 
-The app is targeted at novice mushroom hunters, and for now it only seeks to identify the edible mushrooms recommended by the [Finnish food authority](https://www.ruokavirasto.fi/henkiloasiakkaat/tietoa-elintarvikkeista/elintarvikeryhmat/ruokasienet/suositeltavat-ruokasienet/). These species are common and easy to verify with a book even for beginners.
+The app is targeted at novice mushroom hunters, and for now it only identifies the edible mushrooms recommended by the [Finnish food authority](https://www.ruokavirasto.fi/henkiloasiakkaat/tietoa-elintarvikkeista/elintarvikeryhmat/ruokasienet/suositeltavat-ruokasienet/). These species are common and easy to verify with a book even for beginners.
 
 *NOTE: This project is a work-in-progress. Check the [Roadmap](#roadmap) below for a quick* overview of the development stage.
 
@@ -53,37 +53,17 @@ What makes this special is that it focuses on common species in Finland. Further
 
 *Write some existing apps here. This is a project focusing on Finnish mushrooms. This is a practice project.*
 
-#### Disclaimer
+### A word of caution
 
 Mushroom identification techniques include feeling, peeling, cutting and smelling the fungi. Furthermore, the habitat, nearby tree species and the time of the year also affect the identification. Features like these are difficult or impossible to teach to an image recognition software.
 
 Therefore, please don't blindly trust any image recognition application for classifying mushrooms. Apps such as mushi-identifier can be helpful, but they cannot replace an experienced friend and/or a recent mushroom book. Even a well-trained model will sometimes make false predictions.
 
-That being said, as long as you use the mushi-identifier together with some scepticism and a good mushroom book, it should save you a lot of time and make your fungi trips fun and pleasant.
+That being said, as long as you use the mushi-identifier together with some healthy scepticism and a good mushroom book, it should save you a lot of time and make your fungi trips fun and pleasant.
 
 ## Installation
 
 Docker blabla
-
-## Technical details
-
-### Data
-
-I am using the [Danish Fungi 2020 dataset](https://arxiv.org/abs/2103.10107) (preprint paper). Very neat, but unbalanced / long-tailed. Good, more realistic dataset, since uniformly distributed data is a rarity anyway.
-
-I started the project with another Danish dataset and were planning to complement it with scraped data. However, now this is set as external data and used to add images to missing classes. [iNaturalist](https://github.com/visipedia/inat_comp/tree/master/2017#Data) dataset.
-
-### Model
-
-Mushi-identifier is built on a convolutional neural network. The image recognition task is defined as single-label multi-class classification, since the user is expected to submit only one mushroom species in each image.
-
-Due to a shortage of data, I am using transfer learning with fine-tuning. The base CNN is mobilenet, taught with ImageNet. MobileNet is light enough to run on mobile devices, which are target deployment surface. ImageNet already has elementary mushroom knowledge, which helps with the task.
-
-### Deployment
-
-The deployment is done as a mobile app, since mushroom places tend to be low connectivity environments. However, a REST api + Flask version will also be developed and deployed on a web server as a practice exercise.
-
-The packaging / dependency manager is [Poetry](https://python-poetry.org/), since it is modern and practical and follows the build system standard set by [PEP-517](https://www.python.org/dev/peps/pep-0517/).
 
 ## Project structure
 
@@ -102,6 +82,29 @@ The packaging / dependency manager is [Poetry](https://python-poetry.org/), sinc
     └── model              # Python code for model training and predictions
 ```
 
+## Technical details
+
+### Data
+
+I am using the [Danish Fungi 2020 dataset](https://arxiv.org/abs/2103.10107) (preprint paper). Very neat, but unbalanced / long-tailed. Good, more realistic dataset, since uniformly distributed data is a rarity anyway.
+
+I started the project with another Danish dataset and were planning to complement it with scraped data. However, now this is set as external data and used to add images to missing classes. [iNaturalist](https://github.com/visipedia/inat_comp/tree/master/2017#Data) dataset.
+
+### Model
+
+Mushi-identifier is built on a convolutional neural network. The image recognition task is defined as single-label multi-class classification, since the user is expected to submit only one mushroom species in each image.
+
+Due to a shortage of data, I am using transfer learning with fine-tuning. The base CNN is mobilenet, taught with ImageNet. MobileNet is light enough to run on mobile devices, which are target deployment surface. ImageNet already has elementary mushroom knowledge, which helps with the task.
+
+This [paper](https://openaccess.thecvf.com/content_WACV_2020/papers/Sulc_Fungi_Recognition_A_Practical_Use_Case_WACV_2020_paper.pdf).
+
+### Deployment
+
+The deployment is done as a mobile app, since mushroom places tend to be low connectivity environments. However, a REST api + Flask version will also be developed and deployed on a web server as a practice exercise.
+
+The packaging / dependency manager is [Poetry](https://python-poetry.org/), since it is modern and practical and follows the build system standard set by [PEP-517](https://www.python.org/dev/peps/pep-0517/).
+
+
 ## Roadmap
 
 This simple roadmap provides a quick overview of the project development stage. To keep it light, I have brushed out most detail adding only the major steps. The roadmap will evolve as new ideas come up.
@@ -112,10 +115,10 @@ This simple roadmap provides a quick overview of the project development stage. 
 
 **Base steps**
 - [x] Review literature and find a solid raw (base) dataset
-- [x] Do an EDA on the raw dataset
+- [x] Do EDA on the raw dataset
 - [x] Verify non-corruption and transfer *raw* data to *interim*
 - [x] Split (train/validation/test) and transfer *interim* data to *processed*
-- [x] Import *processed* data to tensorflow and start developing model
+- [x] Import *processed* data to tensorflow and start developing the model
 
 **Additional steps**
 
@@ -143,7 +146,6 @@ This simple roadmap provides a quick overview of the project development stage. 
   - [ ] Metrics
   - [ ] Baseline performance
   - [ ] Hyperparameters  
-  * Read this [paper](https://openaccess.thecvf.com/content_WACV_2020/papers/Sulc_Fungi_Recognition_A_Practical_Use_Case_WACV_2020_paper.pdf) 
 - [ ] Build an initial model
 - [ ] Tune hyperparameters
 - [ ] Build, train and save a better model
