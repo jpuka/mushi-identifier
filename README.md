@@ -35,7 +35,7 @@ Mushi-identifier is a smartphone app that recognizes mushroom species from photo
 
 The app should be used together with a recent mushroom book. If you find a mushroom you do not know, take a photo for the app and it will tell you what it looks like. Then, you can quickly find the mushroom in the book glossary instead of scrolling through endless pages looking for images of it.
 
-The app is targeted at novice mushroom hunters, and for now it only identifies the edible mushrooms recommended by the [Finnish food authority](https://www.ruokavirasto.fi/henkiloasiakkaat/tietoa-elintarvikkeista/elintarvikeryhmat/ruokasienet/suositeltavat-ruokasienet/). These species are common and easy to verify with a book even for beginners.
+The app is targeted at novice mushroom hunters, and for now it identifies the 26 edible mushrooms species recommended by the [Finnish food authority](https://www.ruokavirasto.fi/henkiloasiakkaat/tietoa-elintarvikkeista/elintarvikeryhmat/ruokasienet/suositeltavat-ruokasienet/). These species are common and easy to verify with a book even for beginners.
 
 *NOTE: This project is a work-in-progress. Check the [Roadmap](#roadmap) below for a quick* overview of the development stage.
 
@@ -88,6 +88,8 @@ Docker blabla
 
 I am using the [Danish Fungi 2020 dataset](https://arxiv.org/abs/2103.10107) (preprint paper). Very neat, but unbalanced / long-tailed. Good, more realistic dataset, since uniformly distributed data is a rarity anyway.
 
+The raw dataset contains images for 21 out of 26 classes. See EDA for distribution. The data for the remaining classes will be scraped from sources such as. Furthermore, classes with a low image count might be completed with scraped images.
+
 I started the project with another Danish dataset and were planning to complement it with scraped data. However, now this is set as external data and used to add images to missing classes. [iNaturalist](https://github.com/visipedia/inat_comp/tree/master/2017#Data) dataset.
 
 ### Model
@@ -109,7 +111,7 @@ The packaging / dependency manager is [Poetry](https://python-poetry.org/), sinc
 
 This simple roadmap provides a quick overview of the project development stage. To keep it light, I have brushed out most detail adding only the major steps. The roadmap will evolve as new ideas come up.
 
-(I could write this in GitHub Projects, but I find them clunky, hard to read and generally overkill for this project. For a larger project with multiple developers I would use a proper project management environment.)
+_ABOUT THIS: For a larger project with multiple developers I would use a proper project management environment that links the roadmap to issues/commits. For this project, I find that having the roadmap here is sufficient and easiest for the readers._
 
 ### Data
 
@@ -123,7 +125,7 @@ This simple roadmap provides a quick overview of the project development stage. 
 **Additional steps**
 
 - [ ] Create a script for loading raw data with tf.keras.utils.get_file (add a md5sum check)
-- [ ] Scrape *external* data from [iNaturalist](https://www.inaturalist.org/), [Danmarks Svampeatlas](https://svampe.databasen.org/), [Luontoportti](https://luontoportti.com/) and/or [GBIF](https://www.gbif.org/).
+- [ ] Scrape *external* data from [iNaturalist](https://www.inaturalist.org/), [Danmarks Svampeatlas¹](https://svampe.databasen.org/), [Luontoportti](https://luontoportti.com/) and/or [GBIF](https://www.gbif.org/).
   - [ ] Scrape data for mushroom species missing from raw dataset
       - [ ] Albatrellus ovinus (*lampaankääpä*)
       - [ ] Hygrophorus camarophyllus (*mustavahakas*)
@@ -134,8 +136,9 @@ This simple roadmap provides a quick overview of the project development stage. 
 - [ ] Do EDA on the scraped external datasets
 - [ ] Verify and transfer *external* data to *interim* mixing it with the raw data
 - [ ] Split (train/validation/test) and transfer mixed *interim* data to *processed*
-- [ ] Import *processed* data to tensorflow and use it to improve the model
+- [ ] Import supplemented *processed* data to tensorflow and use it to improve the model
 
+¹ The raw dataset is from Svampeatlas, so avoid scraping duplicate images, that could get split to both train and test sets biasing the test set.
 
 ### Model
 
