@@ -5,11 +5,11 @@
 # folders in processed, where as in interim some folders are kept empty for future data.
 
 ## Libraries
-import os
 import pathlib
-import shutil
 
 import pandas as pd
+
+from src.data.s02_make_processed_funcs import transfer_interim_to_processed
 
 ## Paths
 
@@ -17,51 +17,43 @@ import pandas as pd
 path_external_dir = pathlib.Path(
     "/home/jpe/Documents/python_projects/mushi-identifier/data/00_external/")
 
+# Interim data directory
+path_interim_dir = pathlib.Path(
+    "/home/jpe/Documents/python_projects/mushi-identifier/data/01_interim/"
+)
+
 # Processed data directory
-path_processed_image_dir = pathlib.Path(
+path_processed_dir = pathlib.Path(
     "/home/jpe/Documents/python_projects/mushi-identifier/data/02_processed/"
 )
 
-# Interim image directory
-path_interim_image_dir = pathlib.Path(
-    "/home/jpe/Documents/python_projects/mushi-identifier/data/01_interim/images_per_class"
-)
+# Interim data image directory
+path_interim_image_dir = path_interim_dir / "images_per_class"
 
 # Mushroom classes for the image recognition task
 path_mushroom_classes = path_external_dir / "mushroom_classes.csv"
 
-## Load
+## Define classes
 
 # Load mushroom classes
 df_mushroom_classes = pd.read_csv(path_mushroom_classes)
 
-# Take class names as list, make filesystem-friendly
-list_classes = (df_mushroom_classes["species"]
-                .str.replace(" ", "_")
-                .str.lower()
-                .to_list())
+# Take class names as series, make filesystem-friendly
+sr_classes = (df_mushroom_classes["species"]
+              .str.replace(" ", "_")
+              .str.lower())
 
+## Transfer interim data to processed
+# TODO: Make a function for splitting data into subsets according to the distribution
+#  of each class. Use this to create train/validation/test in processed.
 
-## transfer_interim_to_processed
-subset = "train_and_validation"
+# Train and validation data
+transfer_interim_to_processed(sr_classes, "train_and_validation", path_interim_image_dir,
+                              path_processed_dir)
 
-for image_class in list_classes:
-    orig_folder = path_interim_image_dir / image_class
-    dest_folder = path_processed_image_dir / subset / image_class
-    orig_fnames = os.listdir(orig_folder)
-    # if orig folder is not empty:
-    if len(orig_fnames) > 10:
-
-        os.makedirs(dest_folder, exist_ok=True)
-
-        dest_fnames = [f"{image_class}_{j}.jpg" for j in range(0, len(orig_fnames))]
-
-        for orig_fname, dest_fname in zip(orig_fnames, dest_fnames):
-            shutil.copyfile(src=orig_folder / orig_fname,
-                            dst=dest_folder / dest_fname)
-
-        print(f"Transfer interim -> processed complete "
-              f"for {image_class} ({len(orig_fnames)} files).")
-    else:
-        print(f"Skip transfer for {image_class}, "
-              f"too little data ({len(orig_fnames)} files).")
+# Test data
+# TODO: Remove once test is mixed with the rest of the data in interim and
+#  the split function is implemented.
+path_interim_test_image_dir = path_interim_dir / "test"
+transfer_interim_to_processed(sr_classes, "test", path_interim_test_image_dir,
+                              path_processed_dir)
