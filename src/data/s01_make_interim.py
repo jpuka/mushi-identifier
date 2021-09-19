@@ -1,29 +1,19 @@
-# The purpose of this script is to transfer images to the interim folder. Only
-# non-corrupted images will be transferred.
+# This script transfers the images from raw and external to interim creating a
+# subdirectory for each class. The images are mixed so they can later be easily split
+# into train/test/validate sets. The images are checked for corruption before the
+# transfer.
 
-# The script combines the external and raw images to interim, where there is a
-# a folder for each species.
-
-# Interim folder is used, since external data will be easy to add there
-# and split to train/validation/test.
-
-# TODO:
-#  -add logic for test data - possibly own directory in interim?
-#  -transfer functions to s01_make_interim_funcs
-#  -add external data for missing/lacking classes
-#  -make paths relative to project repository, check best practices
 
 ## Import libraries
-import os
 import pathlib
-import shutil
 
 import pandas as pd
+
 from src.data.s01_make_interim_funcs import filter_path_class_metadata, \
     create_interim_folders, transfer_raw_to_interim
 
 ## Set paths
-# TODO: make relative to project repository, check best practices
+# TODO: make paths relative to project repository, check best practices
 
 # External data directory
 path_external_dir = pathlib.Path(
@@ -72,6 +62,17 @@ df_meta_test = filter_path_class_metadata(df_meta_test_raw, df_mushroom_classes)
 ## Create interim folder structure
 create_interim_folders(df_mushroom_classes, path_interim_image_dir)
 
-## Transfer raw and external data to interim
+## Transfer raw data to interim
+
+# Train and validation data
 transfer_raw_to_interim(df_meta_train_val, path_raw_image_dir, path_interim_image_dir)
-# transfer_raw_to_interim(df_meta_test)
+
+# TODO: Mix test data in interim with the train/validation set. For now test is
+#  kept separate so we can compare test set performance to the DF2020 article.
+# Test data
+path_interim_test_image_dir = path_interim_dir / "test"
+create_interim_folders(df_mushroom_classes, path_interim_test_image_dir)
+transfer_raw_to_interim(df_meta_test, path_raw_image_dir, path_interim_test_image_dir)
+
+## TODO: Transfer external data to interim
+

@@ -1,7 +1,8 @@
-# Functions for creating interim data. Used in s01_make_interim.py.
+# Functions for creating interim subdirectories and transferring data from raw and
+# external. Used in s01_make_interim.py.
+
 
 ## Import libraries
-
 import os
 import shutil
 
@@ -75,7 +76,7 @@ def transfer_raw_to_interim(df_meta, path_raw_image_dir, path_interim_image_dir)
 
     :param df_meta: Dataframe with filename and class of each image
     :param path_raw_dir: Path to raw directory
-    :param path_interim_image_dir: Path to interim directory
+    :param path_interim_image_dir: Path to interim image directory
     """
     # Copy image files to interim directory
     for j, (image_name, image_class) in enumerate(
@@ -85,7 +86,8 @@ def transfer_raw_to_interim(df_meta, path_raw_image_dir, path_interim_image_dir)
         # Create path for the interim image
         path_interim_image = path_interim_image_dir / image_class / image_name
 
-        # TODO: Implement a corruption check here (even though raw set is known-good)
+        # TODO: implement a robust corruption check (even though raw dataset
+        #  is known-good). PIL should be good enough.
         # Check for corrupted images
         # if verify_not_corrupted(path_raw_image):
 
