@@ -111,7 +111,7 @@ The packaging / dependency manager is [Poetry](https://python-poetry.org/), sinc
 
 This simple roadmap provides a quick overview of the project development stage. To keep it light, I have brushed out most detail adding only the major steps. The roadmap will evolve as new ideas come up.
 
-_ABOUT THIS: For a larger project with multiple developers I would use a proper project management environment that links the roadmap to issues/commits. For this project, I find that having the roadmap here is sufficient and easiest for the readers._
+_About this: For a larger project with multiple developers I would use a proper project management environment that links the roadmap to issues/commits. For this project, I find that having the roadmap here is sufficient and easiest for the readers._
 
 ### Data
 
@@ -134,22 +134,25 @@ _ABOUT THIS: For a larger project with multiple developers I would use a proper 
       - [ ] Tricholoma matsutake (*tuoksuvalmuska*)
   - [ ] Scrape additional data for species with a low image count in the raw dataset
 - [ ] Do EDA on the scraped external datasets
-- [ ] Verify and transfer *external* data to *interim* mixing it with the raw data
+- [ ] Verify and transfer *external* data to *interim* mixing it with the raw data²
 - [ ] Split (train/validation/test) and transfer mixed *interim* data to *processed*
 - [ ] Import supplemented *processed* data to tensorflow and use it to improve the model
 
-¹ The raw dataset is from Svampeatlas, so avoid scraping duplicate images, that could get split to both train and test sets biasing the test set.
+¹ The raw dataset is from Svampeatlas, so avoid scraping duplicate images, that could get split to both train and test sets biasing the test set.  
+² Think about this - the validation/test sets will need to be of the same distribution.
 
 ### Model
 
 **Base steps**
 
-- [ ] Review literature and make initial modelling choices:
-  - [ ] Architecture
-  - [ ] Metrics
-  - [ ] Baseline performance
-  - [ ] Hyperparameters  
-- [ ] Build an initial model
+- [x] Review literature and make initial modelling choices:
+  - [x] Architecture
+  - [x] Metrics
+  - [x] Baseline performance
+  - [x] Hyperparameters  
+- [x] Build, train and save an initial model
+- [ ] Write plotting functions
+- [ ] Write prediction functions
 - [ ] Tune hyperparameters
 - [ ] Build, train and save a better model
 
@@ -159,12 +162,14 @@ _ABOUT THIS: For a larger project with multiple developers I would use a proper 
 - [ ] Consider iterated k-fold with shuffling, if enough computational resources. If we do hyperparameter tuning, this might be needed in any case to not overfit to the validation data.
 - [ ] Consider adding macro-averaged F1 score to metrics (by subclassing), since it works well for long-tailed class distributions [Fungi paper].
 - [ ] Based on the model prediction, present yes/no-questions to the user ("If you cut the bottom, does it bleed white? y/n") to verify the species.
+- [ ] Consider MobileNetV2 outside of Keras to improve image resolution
+- [ ] Consider MobileNetV3 as the base model
 
 ### Deployment
 
 **Base steps**
 
-- [ ] Prepare a Dockerfile so that the project can be easily transferred to other systems
+- [ ] Dockerize the project so it can easily be transferred to other systems
 - [ ] Do weight pruning and quantization to optimize the model
 - [ ] Transfer the model into a Tensorflow lite model
 - [ ] Develop the mobile application and deploy it on a smartphone
