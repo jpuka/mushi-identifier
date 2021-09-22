@@ -6,6 +6,7 @@
 
 ## Libraries
 import pathlib
+import csv
 
 import matplotlib.pyplot as plt
 import tensorflow as tf
@@ -69,16 +70,24 @@ test_dataset = image_dataset_from_directory(
     batch_size=batch_size
 )
 
-## Take a look
+## Classes
 
 # Print class names
-print(train_dataset.class_names)
-print(len(train_dataset.class_names))
+classes = train_dataset.class_names
+print(classes)
+print(len(classes))
 
 # Set number of classes
 num_classes = len(train_dataset.class_names)
 
-# Check some images
+
+# Save classes to file for use in predictions
+with open(path_model_dir / "classes_mushi_model_1.csv", "w") as f:
+    writer = csv.writer(f)
+    writer.writerow(["species"])
+    writer.writerows(zip(classes))
+
+## View some images
 plt.figure(figsize=(10, 10))
 for images, labels in train_dataset.take(1):
     for j in range(4):
@@ -86,6 +95,7 @@ for images, labels in train_dataset.take(1):
         plt.imshow(images[j].numpy().astype("uint8"))
         plt.title(train_dataset.class_names[labels[j]])
         plt.axis("off")
+
 
 ## Configure for performance (https://www.tensorflow.org/tutorials/load_data/images)
 
@@ -214,3 +224,6 @@ model_history = model.fit(train_dataset,
 
 # check the tensorflow imbalanced tutorial for plotting functions
 # confusion matrix
+
+# lower accuracy can be random since we don't do k-fold cross valid
+# lower accuracy can be bc we have less classes, we use a subset
