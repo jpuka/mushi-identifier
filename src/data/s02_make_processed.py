@@ -1,8 +1,9 @@
 # Takes the data from interim and transfers it to processed with a folder structure
 # that tf.keras.preprocessing is able to read
 
-# The main difference between interim and processes is that there are no empty
+# The main difference between interim and processed is that there are no empty
 # folders in processed, where as in interim some folders are kept empty for future data.
+# Furthermore, in processed the data is split to train/validation/test.
 
 ## Libraries
 import pathlib
@@ -45,15 +46,15 @@ sr_classes = (df_mushroom_classes["species"]
 
 ## Transfer interim data to processed
 # TODO: Make a function for splitting data into subsets according to the distribution
-#  of each class. Use this to create train/validation/test in processed. check the perumation idea from manning.
-#  but basically shuffle + split + copy
+#  of each class. Use this to create train/validation/test in processed. Check the
+#  permutation idea from manning. But basically shuffle + split + copy
 
 # Train and validation data
 transfer_interim_to_processed(sr_classes, "train_and_validation", path_interim_image_dir,
                               path_processed_dir)
 
 # Test data
-# TODO: Remove once test is mixed with the rest of the data in interim and
+# TODO: Remove this once test is mixed with the rest of the data in interim and
 #  the split function is implemented.
 path_interim_test_image_dir = path_interim_dir / "test"
 transfer_interim_to_processed(sr_classes, "test", path_interim_test_image_dir,

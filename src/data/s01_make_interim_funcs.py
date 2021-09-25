@@ -10,7 +10,7 @@ import shutil
 ##
 def filter_path_class_metadata(df_meta_raw, df_classes):
     """
-    Search raw metadata for image filenames of classes of interest.
+    Find image filenames from raw metadata for the classes of interest.
     This is a pre-step for transferring the images to the interim folder.
 
     :param df_meta_raw: Dataframe with raw metadata
@@ -18,11 +18,11 @@ def filter_path_class_metadata(df_meta_raw, df_classes):
     :return: Dataframe with filename and class of each image
     """
 
-    # Choose columns of interest. There is a lot of interesting metadata, but
+    # Choose columns of interest. There is a lot of metadata, but
     # we are only interested in species and image paths.
     df_meta = df_meta_raw.loc[:, ["genus", "specificEpithet", "image_path"]]
 
-    # Rename image_path, since it contains filenames
+    # Rename image_path, since it actually contains filenames
     df_meta.rename(columns={"image_path": "image_filename"}, inplace=True)
 
     # Construct the species name (in the raw metadata "scientificName" has additional

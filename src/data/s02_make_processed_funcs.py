@@ -28,12 +28,12 @@ def transfer_interim_to_processed(sr_classes, subset, path_interim_image_dir,
 
         # List files in origin class directory
         orig_fnames = os.listdir(orig_folder)
-        # If the class has some files
+        # If the class has a reasonable number of files
         if len(orig_fnames) > 5:
 
             # Create the destination folder
             os.makedirs(dest_folder, exist_ok=True)
-            # Create the destination file name
+            # Build the destination filename
             dest_fnames = [f"{image_class}_{j}.jpg" for j in range(0, len(orig_fnames))]
 
             # Copy files from origin to destination, rename
@@ -44,6 +44,7 @@ def transfer_interim_to_processed(sr_classes, subset, path_interim_image_dir,
             # Report transfer progress
             print(f"Transfer interim -> processed complete "
                   f"for {image_class} ({len(orig_fnames)} files).")
+
         # Report skipped classes
         else:
             print(f"Skip transfer for {image_class}, "

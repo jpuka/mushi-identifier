@@ -13,7 +13,7 @@ from src.data.s01_make_interim_funcs import filter_path_class_metadata, \
     create_interim_folders, transfer_raw_to_interim
 
 ## Set paths
-# TODO: make paths relative to project repository, check best practices
+# TODO: make paths relative to project repository
 
 # External data directory
 path_external_dir = pathlib.Path(
