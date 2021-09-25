@@ -45,7 +45,8 @@ sr_classes = (df_mushroom_classes["species"]
 
 ## Transfer interim data to processed
 # TODO: Make a function for splitting data into subsets according to the distribution
-#  of each class. Use this to create train/validation/test in processed.
+#  of each class. Use this to create train/validation/test in processed. check the perumation idea from manning.
+#  but basically shuffle + split + copy
 
 # Train and validation data
 transfer_interim_to_processed(sr_classes, "train_and_validation", path_interim_image_dir,
