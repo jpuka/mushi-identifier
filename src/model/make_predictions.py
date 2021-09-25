@@ -47,9 +47,9 @@ prediction = model.predict(img_array)
 ## Apply softmax to calculate confidences, since not done in model output layer
 prediction_softmax = tf.nn.softmax(prediction)
 
-## Find prediction indices and confidences
-pred_indices = np.flip(np.argsort(prediction_softmax).flatten())
-pred_confidences = prediction_softmax.numpy().flatten()
+# Create ordered prediction indices and confidences
+pred_indices = np.flip(np.argsort(prediction_softmax).flatten()).tolist()
+pred_confidences = prediction_softmax.numpy().flatten().tolist()
 
 ## Save top 3 results to dictionary
 pred_classes_top3 = [classes[ix] for ix in pred_indices][:3]
