@@ -1,0 +1,9 @@
+# ignore .venv in app
+app/.venv/
+
+TODO: figure out best practice for this. Which approach is better:
+ - Create Dockerfile and .dockerignore at project root [current approach].
+ - Create a subfolder structure like app/app/ and put dockerfile inside first
+ "app/". Access "models/" from parent directory.
+
+
