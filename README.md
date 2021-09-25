@@ -1,14 +1,16 @@
 # Mushi-identifier
 
-   * [Introduction](#introduction)
-   * [Motivation](#motivation)
-   * [Installation](#installation)
-   * [Project structure](#project-structure)
-   * [Technical details](#technical-details)
-   * [Roadmap](#roadmap)
+## Contents
+
+[1 Introduction](#introduction)  
+[2 Motivation](#motivation)  
+[3 Installation](#installation)  
+[4 Project structure](#project-structure)  
+[5 Technical details](#technical-details)  
+[6 Roadmap](#roadmap)
 
 
-## Introduction
+## 1 Introduction
 
 <table><tr>
 <td> 
@@ -39,7 +41,7 @@ The app is targeted at novice mushroom hunters, and for now it identifies the 26
 
 *NOTE: This project is a work-in-progress. Check the [Roadmap](#roadmap) below for a quick* overview of the development stage.
 
-## Motivation
+## 2 Motivation
 
 This is an autumn deep learning project, that I felt inspired to start after going mushroom hunting with friends with no prior experience in mushrooms. I found that especially for people with less experience, the majority of the time in the forest is spent staring at a book trying to find images that resemble the mushroom in front of you.
 
@@ -61,21 +63,22 @@ Therefore, please don't blindly trust any image recognition application for clas
 
 That being said, as long as you use the mushi-identifier together with some healthy scepticism and a good mushroom book, it should save you a lot of time and make your fungi trips fun and pleasant.
 
-## Installation
+## 3 Installation
 
-git pull repo
-
+git pull repo  
+install poetry
 
 
 ### Project
 
-1. install poetry
-2. poetry install reqs
-3. get data with "get_..." scripts, depending on what you want to load
+1. poetry install reqs
+2. get data with "get_..." scripts, depending on what you want to load
+3. cd to directory
+4. start running scripts and stuff.
 
 ### App
 
-2. install docker
+1. install docker
 
 ```bash
 # Folder
@@ -89,7 +92,9 @@ docker inspect mia
 # Connect to ip:8000 on browser
 ```
 
-## Project structure
+## 4 Project structure
+
+Based on Cookiecutter data science with some modifications.
 
 ```bash
 ├── data
@@ -106,7 +111,7 @@ docker inspect mia
     └── model              # Python code for model training and predictions
 ```
 
-## Technical details
+## 5 Technical details
 
 ### Data
 
@@ -120,7 +125,7 @@ I started the project with another Danish dataset and were planning to complemen
 
 Mushi-identifier is built on a convolutional neural network. The image recognition task is defined as single-label multi-class classification, since the user is expected to submit only one mushroom species in each image.
 
-Due to a shortage of data, I am using transfer learning with fine-tuning. The base CNN is mobilenet, taught with ImageNet. MobileNet is light enough to run on mobile devices, which are target deployment surface. ImageNet already has elementary mushroom knowledge, which helps with the task.
+Due to a shortage of data, I am using transfer learning with fine-tuning. The base CNN is mobilenet, taught with ImageNet. MobileNet is light enough to run on mobile devices, which are target deployment surface.
 
 This [paper](https://openaccess.thecvf.com/content_WACV_2020/papers/Sulc_Fungi_Recognition_A_Practical_Use_Case_WACV_2020_paper.pdf).
 
@@ -131,7 +136,7 @@ The deployment is done as a mobile app, since mushroom places tend to be low con
 The packaging / dependency manager is [Poetry](https://python-poetry.org/), since it is modern and practical and follows the build system standard set by [PEP-517](https://www.python.org/dev/peps/pep-0517/).
 
 
-## Roadmap
+## 6 Roadmap
 
 This simple roadmap provides a quick overview of the project development stage. The roadmap will be updated as the project progresses.
 
@@ -152,16 +157,13 @@ _About this: For a larger project with multiple developers I would use a proper 
 
 - [ ] Create a get-script for loading raw data with tf.keras.utils.get_file (add a md5sum check)
 - [ ] Scrape *external* data from [iNaturalist](https://www.inaturalist.org/), [Danmarks Svampeatlas¹](https://svampe.databasen.org/), [Luontoportti](https://luontoportti.com/) and/or [GBIF](https://www.gbif.org/).
-  - [ ] Scrape data for mushroom species missing from raw dataset
-      - [ ] Albatrellus ovinus (*lampaankääpä*)
-      - [ ] Hygrophorus camarophyllus (*mustavahakas*)
-      - [ ] Morchella spp. (*huhtasienet*, many variants)
-      - [ ] Russula vinosa (*viinihapero*)
-      - [ ] Tricholoma matsutake (*tuoksuvalmuska*)
+  - [ ] Scrape data for mushroom species missing from the raw dataset 
+    - Albatrellus ovinus, Hygrophorus camarophyllus, Morchella spp., Russula vinosa, Tricholoma matsutake
   - [ ] Scrape additional data for species with a low image count in the raw dataset
 - [ ] Do EDA on the scraped external datasets
 - [ ] Verify and transfer *external* data to *interim* mixing it with the raw data²
 - [ ] Split (train/validation/test) and transfer mixed *interim* data to *processed*
+- TODO: Combine above two steps
 - [ ] Import supplemented *processed* data to tensorflow and use it to improve the model
 
 ¹ The raw dataset is from Svampeatlas, so avoid scraping duplicate images, that could get split to both train and test sets biasing the test set.  
@@ -171,24 +173,17 @@ _About this: For a larger project with multiple developers I would use a proper 
 
 **Base steps**
 
-- [x] Review literature and make initial modelling choices:
-  - [x] Architecture
-  - [x] Metrics
-  - [x] Baseline performance
-  - [x] Hyperparameters  
+- [x] Review literature and make initial modelling choices (architecture, metrics, baseline performance, hyperparameters)
 - [x] Build, train and save an initial model
-- [x] Write prediction functions
+- [x] Write prediction function
 - [ ] Write plotting functions
 - [ ] Tune hyperparameters
 - [ ] Build, train and save a better model
 
 **Additional steps**
  
-- [ ] Implement k-fold cross validation instead of standard data split to increase the reliability of validation scores.
-- [ ] Consider iterated k-fold with shuffling, if enough computational resources. If we do hyperparameter tuning, this might be needed in any case to not overfit to the validation data.
+- [ ] Implement (iterated) k-fold cross validation (with shuffling) instead of standard data split to increase the reliability of validation scores. This might be required for hyperparameter tuning to not overfit to the validation data.
 - [ ] Consider adding macro-averaged F1 score to metrics (by subclassing), since it works well for long-tailed class distributions [Fungi paper].
-- [ ] Based on the model prediction, present yes/no-questions to the user ("If you cut the bottom, does it bleed white? y/n") to verify the species.
-- [ ] Consider MobileNetV2 outside of Keras to improve image resolution
 - [ ] Consider MobileNetV3 as the base model
 
 ### Deployment
@@ -198,8 +193,9 @@ _About this: For a larger project with multiple developers I would use a proper 
 - [x] Implement a simple API with Docker and FastAPI
 - [ ] Study security best practices and make the API public on a VPS
 - [ ] Optimize model for mobile: do weight pruning and quantization, convert to Tensorflow lite
-- [ ] Develop the mobile app and deploy it on a smartphone
+- [ ] Develop the mobile app
 
 **Additional steps**
 
 - [ ] Implement a simple frontend for the web API
+- [ ] Based on the model prediction, present yes/no-questions to the user ("If you cut the bottom, does it bleed white? y/n") to verify the species.
