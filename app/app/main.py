@@ -1,3 +1,6 @@
+## Start the API for classifying user-submitted mushrooms. Designed to run on a
+# Docker container.
+
 ## Imports
 import pathlib
 
@@ -42,7 +45,7 @@ async def predict_image_class(img_file: UploadFile = File(...)):
     img_array = read_image(img_bytes, target_size=(224, 224))
 
     # Create a dictionary with top k predictions
-    predictions_top_k = create_prediction(model, img_array, classes, top_k=5)
+    predictions_top_k = create_prediction(model, img_array, classes, top_k=3)
 
     return predictions_top_k
 
