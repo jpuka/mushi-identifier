@@ -31,7 +31,7 @@ Can you eat either of them? TODO: Make mushroom images and titles a single image
 
 Have you ever wandered around in the beautiful autumn forest looking for fungi food, but ended up spending most of your time staring at a book while getting inhabited by deer flies. If so, this tool might be just for you! It will help you deduce which mushroom is delicious and which kills you, while allowing you to spend more time marvelling the nature around you.
 
-Mushi-identifier is a smartphone app that recognizes mushroom species from photos. After receiving a photo, it returns the name of the mushroom with a confidence score.
+Mushi-identifier is an image-recognition application (web & mobile) that recognizes mushroom species from photos. After receiving a photo, it returns the name of the mushroom with a confidence score.
 
 The app should be used together with a recent mushroom book. If you find a mushroom you do not know, take a photo for the app and it will tell you what it looks like. Then, you can quickly find the mushroom in the book glossary instead of scrolling through endless pages looking for images of it.
 
@@ -63,7 +63,31 @@ That being said, as long as you use the mushi-identifier together with some heal
 
 ## Installation
 
-Docker blabla
+git pull repo
+
+
+
+### Project
+
+1. install poetry
+2. poetry install reqs
+3. get data with "get_..." scripts, depending on what you want to load
+
+### App
+
+2. install docker
+
+```bash
+# Folder
+cd app
+# Build
+docker build -t mushi-identifier-app .
+# Start (--rm flag optional, but can help while modifying)
+docker run -d -p 8000:8000 --name mia --rm mushi-identifier-app
+# Check IP if needed (IPAddress)
+docker inspect mia
+# Connect to ip:8000 on browser
+```
 
 ## Project structure
 
@@ -109,7 +133,7 @@ The packaging / dependency manager is [Poetry](https://python-poetry.org/), sinc
 
 ## Roadmap
 
-This simple roadmap provides a quick overview of the project development stage. To keep it light, I have brushed out most detail adding only the major steps. The roadmap will evolve as new ideas come up.
+This simple roadmap provides a quick overview of the project development stage. The roadmap will be updated as the project progresses.
 
 _About this: For a larger project with multiple developers I would use a proper project management environment that links the roadmap to issues/commits. For this project, I find that having the roadmap here is sufficient and easiest for the readers._
 
@@ -118,13 +142,15 @@ _About this: For a larger project with multiple developers I would use a proper 
 **Base steps**
 - [x] Review literature and find a solid raw (base) dataset
 - [x] Do EDA on the raw dataset
+  - compare our classes to ones in article, numbers, counts
+  - make guesses how our model will behave
 - [x] Verify non-corruption and transfer *raw* data to *interim*
 - [x] Split (train/validation/test) and transfer *interim* data to *processed*
 - [x] Import *processed* data to tensorflow and start developing the model
 
 **Additional steps**
 
-- [ ] Create a script for loading raw data with tf.keras.utils.get_file (add a md5sum check)
+- [ ] Create a get-script for loading raw data with tf.keras.utils.get_file (add a md5sum check)
 - [ ] Scrape *external* data from [iNaturalist](https://www.inaturalist.org/), [Danmarks Svampeatlas¹](https://svampe.databasen.org/), [Luontoportti](https://luontoportti.com/) and/or [GBIF](https://www.gbif.org/).
   - [ ] Scrape data for mushroom species missing from raw dataset
       - [ ] Albatrellus ovinus (*lampaankääpä*)
@@ -151,8 +177,8 @@ _About this: For a larger project with multiple developers I would use a proper 
   - [x] Baseline performance
   - [x] Hyperparameters  
 - [x] Build, train and save an initial model
+- [x] Write prediction functions
 - [ ] Write plotting functions
-- [ ] Write prediction functions
 - [ ] Tune hyperparameters
 - [ ] Build, train and save a better model
 
@@ -169,12 +195,11 @@ _About this: For a larger project with multiple developers I would use a proper 
 
 **Base steps**
 
-- [ ] Dockerize the project so it can easily be transferred to other systems
-- [ ] Do weight pruning and quantization to optimize the model
-- [ ] Transfer the model into a Tensorflow lite model
-- [ ] Develop the mobile application and deploy it on a smartphone
+- [x] Implement a simple API with Docker and FastAPI
+- [ ] Study security best practices and make the API public on a VPS
+- [ ] Optimize model for mobile: do weight pruning and quantization, convert to Tensorflow lite
+- [ ] Develop the mobile app and deploy it on a smartphone
 
 **Additional steps**
 
-- [ ] Create a simple web application with Flask + REST api
-- [ ] Study cybersecurity best practices and reveal the web app to the internet
+- [ ] Implement a simple frontend for the web API

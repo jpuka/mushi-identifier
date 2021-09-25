@@ -82,7 +82,8 @@ num_classes = len(train_dataset.class_names)
 
 
 # Save classes to file for use in predictions
-with open(path_model_dir / "classes_mushi_model_1.csv", "w") as f:
+# TODO: save with Finnish name, do pandas tricks on classfile
+with open(path_model_dir / "classes_mushi_identifier_v1.csv", "w") as f:
     writer = csv.writer(f)
     writer.writerow(["species"])
     writer.writerows(zip(classes))
@@ -170,7 +171,8 @@ metrics = [
 ]
 
 ## Define callbacks
-# TODO: Check keras.callbacks.LearningRateScheduler for dynamically reducing l_rate
+# TODO:
+#  -Check keras.callbacks.LearningRateScheduler for dynamically reducing l_rate
 
 callbacks = [
     keras.callbacks.EarlyStopping(
@@ -179,7 +181,7 @@ callbacks = [
         patience=10
     ),
     keras.callbacks.ModelCheckpoint(
-        filepath=path_model_dir / "mushi_model_1.keras",
+        filepath=path_model_dir / "mushi_identifier_v1.keras",
         monitor="val_loss",
         verbose=1,
         save_best_only=True
