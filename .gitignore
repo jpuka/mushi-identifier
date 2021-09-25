@@ -8,3 +8,7 @@ data/**/*.json
 
 # Notebook checkpoints
 notebooks/.ipynb_checkpoints/
+
+# Saved models
+models/
+
