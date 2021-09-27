@@ -2,12 +2,12 @@
 
 ## Contents
 
-[1 Introduction](#introduction)  
-[2 Motivation](#motivation)  
-[3 Installation](#installation)  
-[4 Project structure](#project-structure)  
-[5 Technical details](#technical-details)  
-[6 Roadmap](#roadmap)
+[1 Introduction](#1-introduction)  
+[2 Motivation](#2-motivation)  
+[3 Installation](#3-installation)  
+[4 Project structure](#4-project-structure)  
+[5 Technical details](#5-technical-details)  
+[6 Roadmap](#6-roadmap)
 
 
 ## 1 Introduction
@@ -33,15 +33,17 @@ Can you eat either of them? TODO: Make mushroom images and titles a single image
 
 Have you ever wandered around in the beautiful autumn forest looking for fungi food, but ended up spending most of your time staring at a book while getting inhabited by deer flies. If so, this tool might be just for you! It will help you deduce which mushroom is delicious and which kills you, while allowing you to spend more time marvelling the nature around you.
 
-Mushi-identifier is an image-recognition application (web & mobile) that recognizes mushroom species from photos. After receiving a photo, it returns the name of the mushroom with a confidence score.
+Mushi-identifier is an image-recognition application (web & mobile) that recognizes mushroom species from photos. After receiving a photo, it returns the names of the top-3 mushrooms it resembles with a confidence score.
 
 The app should be used together with a recent mushroom book. If you find a mushroom you do not know, take a photo for the app and it will tell you what it looks like. Then, you can quickly find the mushroom in the book glossary instead of scrolling through endless pages looking for images of it.
 
 The app is targeted at novice mushroom hunters, and for now it identifies the 26 edible mushrooms species recommended by the [Finnish food authority](https://www.ruokavirasto.fi/henkiloasiakkaat/tietoa-elintarvikkeista/elintarvikeryhmat/ruokasienet/suositeltavat-ruokasienet/). These species are common and easy to verify with a book even for beginners.
 
-*NOTE: This project is a work-in-progress. Check the [Roadmap](#roadmap) below for a quick* overview of the development stage.
+*NOTE: This project is a work-in-progress. Currently, a baseline model trained with the raw dataset (21/26 species) is ready and deployed as a REST API with Docker and FastAPI. Check the [Roadmap](#6-roadmap) below for an overview of the development stage.*
 
 ## 2 Motivation
+
+
 
 This is an autumn deep learning project, that I felt inspired to start after going mushroom hunting with friends with no prior experience in mushrooms. I found that especially for people with less experience, the majority of the time in the forest is spent staring at a book trying to find images that resemble the mushroom in front of you.
 
@@ -174,28 +176,28 @@ _About this: For a larger project with multiple developers I would use a proper 
 **Base steps**
 
 - [x] Review literature and make initial modelling choices (architecture, metrics, baseline performance, hyperparameters)
-- [x] Build, train and save an initial model
-- [x] Write prediction function
-- [ ] Write plotting functions
+- [x] Build, train and save a baseline model
+- [x] Write prediction and plotting functions
+- [ ] Implement k-fold cross-validation to increase reliability of validation metrics and to allow hyperparameter tuning without overfitting validation data
 - [ ] Tune hyperparameters
-- [ ] Build, train and save a better model
+- [ ] Build, train and save an improved model
 
 **Additional steps**
  
-- [ ] Implement (iterated) k-fold cross validation (with shuffling) instead of standard data split to increase the reliability of validation scores. This might be required for hyperparameter tuning to not overfit to the validation data.
-- [ ] Consider adding macro-averaged F1 score to metrics (by subclassing), since it works well for long-tailed class distributions [Fungi paper].
-- [ ] Consider MobileNetV3 as the base model
+- [ ] Add macro-averaged F1 score to metrics, since it works well for long-tailed class distributions
+- [ ] Try MobileNetV3 as the base model
+- [ ] Try fine-tuning instead of feature extraction, once there is enough data
 
 ### Deployment
 
 **Base steps**
 
-- [x] Implement a simple API with Docker and FastAPI
-- [ ] Study security best practices and make the API public on a VPS
-- [ ] Optimize model for mobile: do weight pruning and quantization, convert to Tensorflow lite
-- [ ] Develop the mobile app
+- [x] Web app: Implement a simple REST API with Docker and FastAPI
+- [ ] Web app: Study security best practices and make the API public on a VPS.
+- [ ] Mobile app: Optimize model for mobile - do weight pruning and quantization, convert to Tensorflow lite
+- [ ] Mobile app: Deploy the model on mobile and develop the app
 
 **Additional steps**
 
-- [ ] Implement a simple frontend for the web API
+- [ ] Web app: Implement a simple frontend for the web API, so it is easy to use with a browser.
 - [ ] Based on the model prediction, present yes/no-questions to the user ("If you cut the bottom, does it bleed white? y/n") to verify the species.
