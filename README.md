@@ -87,7 +87,7 @@ install poetry
 cd app
 # Build
 docker build -t mushi-identifier-app .
-# Start (--rm flag optional, but can help while modifying)
+# Start (the --rm flag is optional, but helpful for testing)
 docker run -d -p 8000:8000 --name mia --rm mushi-identifier-app
 # Check IP if needed (IPAddress)
 docker inspect mia
@@ -96,7 +96,7 @@ docker inspect mia
 
 ## 4 Project structure
 
-Based on Cookiecutter data science with some modifications.
+The project structure is loosely based on the Cookiecutter data science [link] template.
 
 ```bash
 ├── data
@@ -117,7 +117,7 @@ Based on Cookiecutter data science with some modifications.
 
 ### Data
 
-I am using the [Danish Fungi 2020 dataset](https://arxiv.org/abs/2103.10107) (preprint paper). Very neat, but unbalanced / long-tailed. Good, more realistic dataset, since uniformly distributed data is a rarity anyway.
+I am using the [Danish Fungi 2020 dataset](https://arxiv.org/abs/2103.10107) (preprint paper). Very neat, but unbalanced / long-tailed. Good, more realistic dataset, since uniformly distributed data is a rarity anyway. Read all about it there, but to sum it up: sumuppp.
 
 The raw dataset contains images for 21 out of 26 classes. See EDA for distribution. The data for the remaining classes will be scraped from sources such as. Furthermore, classes with a low image count might be completed with scraped images.
 
@@ -127,9 +127,9 @@ I started the project with another Danish dataset and were planning to complemen
 
 Mushi-identifier is built on a convolutional neural network. The image recognition task is defined as single-label multi-class classification, since the user is expected to submit only one mushroom species in each image.
 
-Due to a shortage of data, I am using transfer learning with fine-tuning. The base CNN is mobilenet, taught with ImageNet. MobileNet is light enough to run on mobile devices, which are target deployment surface.
+Due to a shortage of data, I am using transfer learning with feature extraction. I will eventually do fine-tuning to improve the performance. The base CNN is mobilenet, taught with ImageNet. MobileNet is light enough to run on mobile devices, which are target deployment surface.
 
-This [paper](https://openaccess.thecvf.com/content_WACV_2020/papers/Sulc_Fungi_Recognition_A_Practical_Use_Case_WACV_2020_paper.pdf).
+I chose MobilenetV2 since it is fast to train - I currently don't have supercomputers at my disposal I am working with Google Colab GPUs. Furthermore, it is light enough to be deployed mobile devices.
 
 ### Deployment
 
@@ -140,7 +140,7 @@ The packaging / dependency manager is [Poetry](https://python-poetry.org/), sinc
 
 ## 6 Roadmap
 
-This simple roadmap provides a quick overview of the project development stage. The roadmap will be updated as the project progresses.
+This roadmap provides a quick overview of the project development stage. The roadmap will be updated as the project progresses.
 
 _About this: For a larger project with multiple developers I would use a proper project management environment that links the roadmap to issues/commits. For this project, I find that having the roadmap here is sufficient and easiest for the readers._
 
@@ -149,24 +149,22 @@ _About this: For a larger project with multiple developers I would use a proper 
 **Base steps**
 - [x] Review literature and find a solid raw (base) dataset
 - [x] Do EDA on the raw dataset
-  - compare our classes to ones in article, numbers, counts
-  - make guesses how our model will behave
 - [x] Verify non-corruption and transfer *raw* data to *interim*
 - [x] Split (train/validation/test) and transfer *interim* data to *processed*
 - [x] Import *processed* data to tensorflow and start developing the model
 
 **Additional steps**
 
-- [ ] Create a get-script for loading raw data with tf.keras.utils.get_file (add a md5sum check)
+- [ ] Write a get-script for loading the raw dataset with a MD5/SHA sum check 
 - [ ] Scrape *external* data from [iNaturalist](https://www.inaturalist.org/), [Danmarks Svampeatlas¹](https://svampe.databasen.org/), [Luontoportti](https://luontoportti.com/) and/or [GBIF](https://www.gbif.org/).
-  - [ ] Scrape data for mushroom species missing from the raw dataset 
-    - Albatrellus ovinus, Hygrophorus camarophyllus, Morchella spp., Russula vinosa, Tricholoma matsutake
+  - [ ] Scrape data for mushroom species missing from the raw dataset (Albatrellus ovinus, Hygrophorus camarophyllus, Morchella spp., Russula vinosa, Tricholoma matsutake)
   - [ ] Scrape additional data for species with a low image count in the raw dataset
 - [ ] Do EDA on the scraped external datasets
-- [ ] Verify and transfer *external* data to *interim* mixing it with the raw data²
+- [ ] Verify and add *external* data to *interim* mixing it with the raw data²
 - [ ] Split (train/validation/test) and transfer mixed *interim* data to *processed*
 - TODO: Combine above two steps
 - [ ] Import supplemented *processed* data to tensorflow and use it to improve the model
+- [ ] Investigate the extra images present in the raw dataset
 
 ¹ The raw dataset is from Svampeatlas, so avoid scraping duplicate images, that could get split to both train and test sets biasing the test set.  
 ² Think about this - the validation/test sets will need to be of the same distribution.
@@ -177,7 +175,7 @@ _About this: For a larger project with multiple developers I would use a proper 
 
 - [x] Review literature and make initial modelling choices (architecture, metrics, baseline performance, hyperparameters)
 - [x] Build, train and save a baseline model
-- [x] Write prediction and plotting functions
+- [x] Write functions for plotting and prediction
 - [ ] Implement k-fold cross-validation to increase reliability of validation metrics and to allow hyperparameter tuning without overfitting validation data
 - [ ] Tune hyperparameters
 - [ ] Build, train and save an improved model
@@ -195,9 +193,9 @@ _About this: For a larger project with multiple developers I would use a proper 
 - [x] Web app: Implement a simple REST API with Docker and FastAPI
 - [ ] Web app: Study security best practices and make the API public on a VPS.
 - [ ] Mobile app: Optimize model for mobile - do weight pruning and quantization, convert to Tensorflow lite
-- [ ] Mobile app: Deploy the model on mobile and develop the app
+- [ ] Mobile app: Wrap the model in an app and deploy on mobile
 
 **Additional steps**
 
 - [ ] Web app: Implement a simple frontend for the web API, so it is easy to use with a browser.
-- [ ] Based on the model prediction, present yes/no-questions to the user ("If you cut the bottom, does it bleed white? y/n") to verify the species.
+- [ ] Based on the model prediction, present yes/no-questions to the user ("If you cut the bottom, does it bleed white? y/n") to help verify the species.
