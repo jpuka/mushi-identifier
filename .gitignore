@@ -9,10 +9,6 @@ data/**/*.json
 # Notebook checkpoints
 notebooks/.ipynb_checkpoints/
 
-# Sketch notebooks and functions
-notebooks/05-jp-eda-ext-FGVCx.ipynb
-src/data/s01_add_interim_from_ext_FGVCx.py
-
 # Saved models
 models/
 
