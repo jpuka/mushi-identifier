@@ -33,37 +33,23 @@ Can you eat either of them? TODO: Make mushroom images and titles a single image
 
 Have you ever wandered around in the beautiful autumn forest looking for fungi food, but ended up spending most of your time staring at a book while getting inhabited by deer flies. If so, this tool might be just for you! It will help you deduce which mushroom is delicious and which kills you, while allowing you to spend more time marvelling the nature around you.
 
-Mushi-identifier is an image-recognition application (web & mobile) that recognizes mushroom species from photos. After receiving a photo, it returns the names of the top-3 mushrooms it resembles with a confidence score.
+Mushi-identifier is an image-recognition application (web & mobile) that identifies mushroom species from photos submitted by the user. After receiving a photo, the app runs it through a convolutional neural network (CNN) and returns the names and confidence scores of the top three mushrooms that most closely resemble the species in the image.
 
-The app should be used together with a recent mushroom book. If you find a mushroom you do not know, take a photo for the app and it will tell you what it looks like. Then, you can quickly find the mushroom in the book glossary instead of scrolling through endless pages looking for images of it.
+Mushi-identifier's predictions should always be verified with a recent mushroom book. The core idea of the app is to allow the user to quickly find the spotted mushroom in the book's glossary - instead of browsing through endless pages looking for images of the species, the user can simply check the app's three predictions in the order of confidence. 
 
-The app is targeted at novice mushroom hunters, and for now it identifies the 26 edible mushrooms species recommended by the [Finnish food authority](https://www.ruokavirasto.fi/henkiloasiakkaat/tietoa-elintarvikkeista/elintarvikeryhmat/ruokasienet/suositeltavat-ruokasienet/). These species are common and easy to verify with a book even for beginners.
+The app is targeted at novice mushroom hunters, and for now it seeks to identify the 26 edible mushrooms species recommended by the [Finnish food authority](https://www.ruokavirasto.fi/henkiloasiakkaat/tietoa-elintarvikkeista/elintarvikeryhmat/ruokasienet/suositeltavat-ruokasienet/). These species are common and easy to verify with a book even for beginners.
 
-*NOTE: This project is a work-in-progress. Currently, a baseline model trained with the raw dataset (21/26 species) is ready and deployed as a REST API with Docker and FastAPI. Check the [Roadmap](#6-roadmap) below for an overview of the development stage.*
+*Note: Mushi-identifier is a work-in-progress. Currently, a baseline model has been trained with the raw dataset (21/26 species) and deployed as a REST API with Docker and FastAPI, and will soon be made public on a server. Check the [Roadmap](#6-roadmap) below for an overview of the development stage.*
 
 ## 2 Motivation
 
+In the autumn of 2021, I did a lot of mushroom hunting trips with friends who were totally new to the sport. While many fungi were found, I realized that due to our combined curiosity we spend most of our time flipping through the pages of various mushroom books. The trips were still very fun and great for learning, but because I prefer to stare at colorful trees in the nature, and have a boring physicist's brain, I wanted to find a way to make the mushi identifying more efficient.
 
+By this time I had already been studying neural networks for over a year, so I figured I could solve the problem in a computer vision (CV) project. I started with a review of existing CV identifier apps. Some of the apps I found identified mushrooms as edible/non-edible which I found both detrimental to learning and dangerous - identifying mushrooms involves feeling, peeling, cutting and smelling. Others looked very promising with inbuilt descriptions but they were closed-source with ads and in-app purchases. This is when I started feeling the urge to develop an open-source app that would be truly free for any enthusiastic mushroom pickers.
 
-This is an autumn deep learning project, that I felt inspired to start after going mushroom hunting with friends with no prior experience in mushrooms. I found that especially for people with less experience, the majority of the time in the forest is spent staring at a book trying to find images that resemble the mushroom in front of you.
+I wanted to build the app from the core to teach people to use mushroom books. I would design it to help beginners get into this great hobby, and its goal would be to eventually become obsolete to its users - once they learned to fully rely on a book and their experience. I decided to focus and tune the application on species common in Finnish conditions and have it return multiple suggestions for each photo to improve its utility. Overall, I felt excited to start a project that could be both a fun learning exercise and useful in practice.
 
-During my initial survey I found plenty of deep learning projects that attempt to classify mushrooms as edible vs. non-edible. For me this is nonsensical.
-
-For me it's nonsensical to build an app that simply tells if a mushi is edible or not. This does not support learning, makes every wrong prediction potentially fatal. However, I have many times been in a situation where I spend most of my mushroom hunting time scrolling through the pages of a book looking for any look-likes. This is the problem this project seeks to alleviate, by doing it for you. Then you can check in the glossary and find it quicker.
-
-This can make to help you identify mushrooms, especially if you really have no idea what you might be looking for. So it makes it quicker to find an unknown species in a book.
-
-What makes this special is that it focuses on common species in Finland. Furthermore, the base training dataset is fresh and robust.
-
-*Write some existing apps here. This is a project focusing on Finnish mushrooms. This is a practice project.*
-
-### A word of caution
-
-Mushroom identification techniques include feeling, peeling, cutting and smelling the fungi. Furthermore, the habitat, nearby tree species and the time of the year also affect the identification. Features like these are difficult or impossible to teach to an image recognition software.
-
-Therefore, please don't blindly trust any image recognition application for classifying mushrooms. Apps such as mushi-identifier can be helpful, but they cannot replace an experienced friend and/or a recent mushroom book. Even a well-trained model will sometimes make false predictions.
-
-That being said, as long as you use the mushi-identifier together with some healthy scepticism and a good mushroom book, it should save you a lot of time and make your fungi trips fun and pleasant.
+And so, mushi-identifier was born.
 
 ## 3 Installation
 
