@@ -10,22 +10,28 @@ import pathlib
 
 import pandas as pd
 
-from src.data.s02_make_processed_funcs import transfer_interim_to_processed
+# For terminal from project root
+import s02_make_processed_funcs as funcs
+
+# For pycharm
+# import src.data.s02_make_processed_funcs as funcs
+
+# TODO: Find a common approach for funcs imports without tweaking PATH
 
 ## Paths
 
 # External data directory
 path_external_dir = pathlib.Path(
-    "/home/jpe/Documents/python_projects/mushi-identifier/data/00_external/")
+    "data/00_external/")
 
 # Interim data directory
 path_interim_dir = pathlib.Path(
-    "/home/jpe/Documents/python_projects/mushi-identifier/data/01_interim/"
+    "data/01_interim/"
 )
 
 # Processed data directory
 path_processed_dir = pathlib.Path(
-    "/home/jpe/Documents/python_projects/mushi-identifier/data/02_processed/"
+    "data/02_processed/"
 )
 
 # Interim data image directory
@@ -50,12 +56,13 @@ sr_classes = (df_mushroom_classes["species"]
 #  permutation idea from manning. But basically shuffle + split + copy
 
 # Train and validation data
-transfer_interim_to_processed(sr_classes, "train_and_validation", path_interim_image_dir,
-                              path_processed_dir)
+funcs.transfer_interim_to_processed(sr_classes, "train_and_validation",
+                                    path_interim_image_dir,
+                                    path_processed_dir)
 
 # Test data
 # TODO: Remove this once test is mixed with the rest of the data in interim and
 #  the split function is implemented.
 path_interim_test_image_dir = path_interim_dir / "test"
-transfer_interim_to_processed(sr_classes, "test", path_interim_test_image_dir,
-                              path_processed_dir)
+funcs.transfer_interim_to_processed(sr_classes, "test", path_interim_test_image_dir,
+                                    path_processed_dir)

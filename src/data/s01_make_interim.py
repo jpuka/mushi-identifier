@@ -9,23 +9,27 @@ import pathlib
 
 import pandas as pd
 
-from src.data.s01_make_interim_funcs import filter_path_class_metadata, \
-    create_interim_folders, transfer_raw_to_interim
+# For terminal from project root
+import s01_make_interim_funcs as funcs
+
+# For pycharm
+# import src.data.s01_make_interim_funcs as funcs
+
+# TODO: Find a common approach for funcs imports without tweaking PATH
 
 ## Set paths
-# TODO: make paths relative to project repository
 
 # External data directory
 path_external_dir = pathlib.Path(
-    "/home/jpe/Documents/python_projects/mushi-identifier/data/00_external/")
+    "data/00_external/")
 
 # Raw data directory
 path_raw_dir = pathlib.Path(
-    "/home/jpe/Documents/python_projects/mushi-identifier/data/00_raw/")
+    "data/00_raw/")
 
 # Interim data directory
 path_interim_dir = pathlib.Path(
-    "/home/jpe/Documents/python_projects/mushi-identifier/data/01_interim/"
+    "data/01_interim/"
 )
 
 # Raw image directory
@@ -56,23 +60,25 @@ df_mushroom_classes = pd.read_csv(path_mushroom_classes)
 
 ## Find filenames for the classes of interest
 
-df_meta_train_val = filter_path_class_metadata(df_meta_train_val_raw, df_mushroom_classes)
-df_meta_test = filter_path_class_metadata(df_meta_test_raw, df_mushroom_classes)
+df_meta_train_val = funcs.filter_path_class_metadata(df_meta_train_val_raw,
+                                                     df_mushroom_classes)
+df_meta_test = funcs.filter_path_class_metadata(df_meta_test_raw, df_mushroom_classes)
 
 ## Create interim folder structure
-create_interim_folders(df_mushroom_classes, path_interim_image_dir)
+funcs.create_interim_folders(df_mushroom_classes, path_interim_image_dir)
 
 ## Transfer raw data to interim
 
 # Train and validation data
-transfer_raw_to_interim(df_meta_train_val, path_raw_image_dir, path_interim_image_dir)
+funcs.transfer_raw_to_interim(df_meta_train_val, path_raw_image_dir,
+                              path_interim_image_dir)
 
 # TODO: Mix test data in interim with the train/validation set. For now test is
 #  kept separate so we can compare test set performance to the DF2020 article.
 # Test data
 path_interim_test_image_dir = path_interim_dir / "test"
-create_interim_folders(df_mushroom_classes, path_interim_test_image_dir)
-transfer_raw_to_interim(df_meta_test, path_raw_image_dir, path_interim_test_image_dir)
+funcs.create_interim_folders(df_mushroom_classes, path_interim_test_image_dir)
+funcs.transfer_raw_to_interim(df_meta_test, path_raw_image_dir,
+                              path_interim_test_image_dir)
 
 ## TODO: Transfer external data to interim
-
