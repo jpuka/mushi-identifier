@@ -100,7 +100,7 @@ docker inspect mia
 
 6. Upload an image to receive a raw prediction ("/predict" -> "Try it out" -> "Browse..." -> "Execute"). For example:
 
-<img src="docs/images/fast_api_swagger_example.png" alt="example api prediction" width="300"/>
+<img src="docs/images/fast_api_swagger_example.png" alt="example api prediction" width="600"/>
 
 ## 4 Project structure
 
