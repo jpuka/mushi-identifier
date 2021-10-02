@@ -32,12 +32,11 @@ The app is targeted at novice mushroom hunters, and for now it seeks to identify
 
 In the autumn of 2021, I did a bunch of mushroom hunting trips with friends who were totally new to the sport. While we usually managed to get home with a fullish basket, due to our combined curiosity we spend most of our time in the forest flipping through the pages of various mushroom books. The trips were still fun and great for learning, but because I prefer staring at living trees and colorful nature, I felt like finding a way to make the mushi identifying more practical.
 
-By this time I had already been studying neural networks for over a year, so I figured I could solve the problem in a computer vision (CV) project. I started with a review of existing CV identifier apps. Some of the apps I found identified mushrooms as edible/non-edible which I found quite detrimental to learning and dangerous - identifying mushrooms involves feeling, peeling, cutting and smelling. Others looked very promising with inbuilt descriptions but they were closed-source with ads and in-app purchases. This is when I started feeling the urge to develop an open-source app that would be free for any enthusiastic mushroom pickers.
+By this time I had already been studying neural networks for over a year, so I figured I could solve the problem in a computer vision (CV) project. I started with a review of existing CV identifier apps. Some of the apps I found identified mushrooms as edible/non-edible which I found quite detrimental to learning and dangerous - identifying mushrooms involves feeling, peeling, cutting and smelling. Others looked very promising with inbuilt descriptions but they were closed-source with ads and in-app purchases. Consequently, I felt like starting an open-source project that would be useful for me and maybe, in the distant future, also for other enthusiastic mushroom pickers.
 
-I wanted to build an app that would help and teach people to use mushroom books. I'd design it to help beginners get into this great hobby, and its ultimate goal would be to become obsolete to its users - once they learned to fully rely on a book and their experience. I decided to focus and tune the application on species common in Finnish conditions and have it return multiple suggestions for each photo to improve its utility. 
+I wanted to build an app that would help and teach its users to use mushroom books. I'd design it to help beginners get into this great hobby, and its ultimate goal would be to become obsolete to the users - once they learned to fully rely on a book and their experience. I decided to focus and tune the application on species common in Finnish conditions and have it return multiple suggestions for each photo to improve its utility. 
 
-Overall, I felt excited to start a project that could be both a fun learning exercise and useful in practice.
-And so, mushi-identifier was born.
+Overall, I felt excited to start a project that could be both a fun learning exercise and practical. And so, mushi-identifier was born.
 
 ## 3 Installation
 
@@ -62,10 +61,11 @@ poetry install
 poetry shell
 ```
 
-4. Download the full [Danish Fungi 2020 dataset](https://sites.google.com/view/danish-fungi-dataset) and extract it to ```data/00_raw/```.
-5. Run Python scripts (from the project root directory) to setup the *interim* and *processed* data directories:
+4. Download the full [Danish Fungi 2020 dataset](https://sites.google.com/view/danish-fungi-dataset) and extract it to ```data/00_raw/``` (warning: it is big).
+5. Run Python scripts to setup the *interim* and *processed* data directories:
 
 ```bash
+# Run from project root directory
 cd mushi-identifier
 python3 src/data/s01_make_interim.py
 python3 src/data/s02_make_processed.py
@@ -106,18 +106,18 @@ Now you are able to request predictions from the model at "IPAddress/predict" (e
 
 ## 4 Project structure
 
-The project structure is loosely based on the Cookiecutter data science [link] template.
+The project structure is loosely based on the [Cookiecutter data science](https://drivendata.github.io/cookiecutter-data-science/) template.
 
 ```bash
 ├── data
-│   ├── 00_external        # Web-scraped images, mushroom classes
+│   ├── 00_external        # Web-scraped images to supplement raw data, mushroom classes
 │   ├── 00_raw             # Danish Fungi 2020 dataset: images and metadata
 │   ├── 01_interim         # Non-corrupted species-wise data combined from external & raw
 │   └── 02_processed       # Model-ready data split into train/validation/test from interim
 ├── docs
 │   └── images             # Images for this README
-├── models                 # Saved models
-├── notebooks              # Jupyter notebooks (EDA, model presentation)
+├── models                 # Saved models and training logs
+├── notebooks              # Jupyter notebooks (EDA, model building)
 └── src
     ├── data               # Python code for data manipulation (scraping, shaping, loading)
     └── model              # Python code for model training and predictions
@@ -127,25 +127,26 @@ The project structure is loosely based on the Cookiecutter data science [link] t
 
 ### Data
 
-I am using the [Danish Fungi 2020 dataset](https://arxiv.org/abs/2103.10107) (preprint paper). Very neat, but unbalanced / long-tailed. Good, more realistic dataset, since uniformly distributed data is a rarity anyway. Read all about it there, but to sum it up: sumuppp.
+I am using the [Danish Fungi 2020](https://arxiv.org/abs/2103.10107) (preprint paper) as the base dataset. The dataset contains images for 21 out of the 26 mushroom classes. It is overall of high quality, but the classes are quite imbalanced. See the EDA at ```notebooks/00-jp-eda-raw-data.ipynb``` for more details and a walkthrough of the data.
 
-The raw dataset contains images for 21 out of 26 classes. See EDA for distribution. The data for the remaining classes will be scraped from sources such as. Furthermore, classes with a low image count might be completed with scraped images.
+During my initial review, I also found the smaller  [2018 FGVCx Fungi Classification Challenge](https://github.com/visipedia/fgvcx_fungi_comp#data) dataset and the [iNaturalist](https://github.com/visipedia/inat_comp/tree/master/2017#Data) dataset. In the future, I'll consider using these datasets to supplement the classes that are missing / have a low image count in the base dataset. Furthermore, I might scrape websites such as [iNaturalist](https://www.inaturalist.org/), [Danmarks Svampeatlas](https://svampe.databasen.org/), [Luontoportti](https://luontoportti.com/) and [GBIF](https://www.gbif.org/).
 
-I started the project with another Danish dataset and were planning to complement it with scraped data. However, now this is set as external data and used to add images to missing classes. [iNaturalist](https://github.com/visipedia/inat_comp/tree/master/2017#Data) dataset.
 
 ### Model
 
-Mushi-identifier is built on a convolutional neural network. The image recognition task is defined as single-label multi-class classification, since the user is expected to submit only one mushroom species in each image.
+Mushi-identifier is based on a convolutional neural network (CNN). The image recognition task is defined as single-label multi-class classification, since the user is expected to submit only one mushroom species in each image. Due to a shortage of data, I'm using transfer learning with feature extraction. Once I have enough data, I will switch to fine-tuning to improve the performance.
 
-Due to a shortage of data, I am using transfer learning with feature extraction. I will eventually do fine-tuning to improve the performance. The base CNN is mobilenet, taught with ImageNet. MobileNet is light enough to run on mobile devices, which are target deployment surface.
+The base network is [MobileNetV2](https://arxiv.org/abs/1801.04381) taught with ImageNet. I chose MobileNet, since it runs well on mobile devices, which are the target deployment platform. Furthermore, it is fast to train - I currently don't have any computing servers at my disposal so I am working with Google Colab GPUs.
 
-I chose MobilenetV2 since it is fast to train - I currently don't have supercomputers at my disposal I am working with Google Colab GPUs. Furthermore, it is light enough to be deployed mobile devices.
+See the notebook at ```notebooks/00-jp-mushi-identifier-v1.ipynb``` for model building details such as metrics, cost, callbacks and hyperparameters.
 
 ### Deployment
 
-The deployment is done as a mobile app, since mushroom places tend to be low connectivity environments. However, a REST api + Flask version will also be developed and deployed on a web server as a practice exercise.
+I will deploy mushi-identifier as a mobile app, that does not require internet connection, since forests and other mushroom regions tend to be low connectivity environments. Additionally, I'll build a REST API with Docker and FastAPI and publish it on a web server to allow calling the model from other devices.
 
-The packaging / dependency manager is [Poetry](https://python-poetry.org/), since it is modern and practical and follows the build system standard set by [PEP-517](https://www.python.org/dev/peps/pep-0517/).
+By default, the app returns the top three predictions with confidence scores to the user. This should improve its the overall "accuracy" and utility, since identifying mushrooms is quite a fine-grained and challenging task.
+
+I have chosen to use [Poetry](https://python-poetry.org/) as the packaging / dependency manager since it is well-documented, modern and follows the standard set by [PEP-517](https://www.python.org/dev/peps/pep-0517/).
 
 
 ## 6 Roadmap
@@ -165,19 +166,14 @@ _About this: For a larger project with multiple developers I would use a proper 
 
 **Additional steps**
 
-- [ ] Write a get-script for loading the raw dataset with a MD5/SHA sum check 
-- [ ] Scrape *external* data from [iNaturalist](https://www.inaturalist.org/), [Danmarks Svampeatlas¹](https://svampe.databasen.org/), [Luontoportti](https://luontoportti.com/) and/or [GBIF](https://www.gbif.org/).
+- [ ] Write a convenience script for loading and extracting the raw dataset and preparing the interim and processed folders. Add a MD5/SHA sum check to the loading part.
+- [ ] Investigate the 80,000 "extra" images present in the raw dataset
+- [ ] Scrape *external* data from [iNaturalist](https://www.inaturalist.org/), [Danmarks Svampeatlas](https://svampe.databasen.org/), [Luontoportti](https://luontoportti.com/) and/or [GBIF](https://www.gbif.org/).
   - [ ] Scrape data for mushroom species missing from the raw dataset (Albatrellus ovinus, Hygrophorus camarophyllus, Morchella spp., Russula vinosa, Tricholoma matsutake)
   - [ ] Scrape additional data for species with a low image count in the raw dataset
 - [ ] Do EDA on the scraped external datasets
-- [ ] Verify and add *external* data to *interim* mixing it with the raw data²
-- [ ] Split (train/validation/test) and transfer mixed *interim* data to *processed*
-- TODO: Combine above two steps
-- [ ] Import supplemented *processed* data to tensorflow and use it to improve the model
-- [ ] Investigate the extra images present in the raw dataset
-
-¹ The raw dataset is from Svampeatlas, so avoid scraping duplicate images, that could get split to both train and test sets biasing the test set.  
-² Think about this - the validatioqn/test sets will need to be of the same distribution.
+- [ ] Verify and add *external* data to *interim* mixing it with the raw data, and split and transfer the mixed *interim* data to *processed*
+- [ ] Use the supplemented *processed* data to improve the model
 
 ### Model
 
@@ -192,7 +188,7 @@ _About this: For a larger project with multiple developers I would use a proper 
 
 **Additional steps**
  
-- [ ] Add macro-averaged F1 score to metrics, since it works well for long-tailed class distributions
+- [ ] Add macro-averaged F1 score to metrics, since it should work well for long-tailed distributions
 - [ ] Try MobileNetV3 as the base model
 - [ ] Try fine-tuning instead of feature extraction, once there is enough data
 
@@ -208,4 +204,3 @@ _About this: For a larger project with multiple developers I would use a proper 
 **Additional steps**
 
 - [ ] Web app: Implement a simple frontend for the web API, so it is easy to use with a browser.
-- [ ] Based on the model prediction, present yes/no-questions to the user ("If you cut the bottom, does it bleed white? y/n") to help verify the species.
