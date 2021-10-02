@@ -62,7 +62,7 @@ poetry install
 poetry shell
 ```
 
-4. Download the [Danish Fungi 2020 dataset](https://sites.google.com/view/danish-fungi-dataset) (full, not mini) and extract it to ```data/00_raw/```.
+4. Download the full [Danish Fungi 2020 dataset](https://sites.google.com/view/danish-fungi-dataset) and extract it to ```data/00_raw/```.
 5. Run Python scripts (from the project root directory) to setup the *interim* and *processed* data directories:
 
 ```bash
@@ -75,7 +75,7 @@ python3 src/data/s02_make_processed.py
 
 ```bash
 # Launch notebook for training the baseline model
-jupyterlab notebooks/01-jp-mushi-identifier-v1.ipynb
+jupyter-lab notebooks/01-jp-mushi-identifier-v1.ipynb
 ```
 
 ### Web app
@@ -96,7 +96,9 @@ docker inspect mia
 # E.g. "IPAddress": "172.17.0.2"
 ```
 
-5. Connect to the local IP address docs page (e.g.```172.17.0.2/docs```) on your browser to access the Swagger UI.
+Now you are able to request predictions from the model at "IPAddress/predict" (e.g. ```172.17.0.2/predict```). If you want to test the API on a web browser, follow these steps:
+
+5. Connect to the docs page (e.g.```172.17.0.2/docs```) on your browser to access the Swagger UI.
 
 6. Upload an image to receive a raw prediction ("/predict" -> "Try it out" -> "Browse..." -> "Execute"). For example:
 
