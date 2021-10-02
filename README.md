@@ -12,24 +12,11 @@
 
 ## 1 Introduction
 
-<table><tr>
-<td> 
-  <p align="center" style="padding: 10px">
-    <p>Which mushroom is this?</p>
-    <img alt="Forwarding" src="docs/images/example_russula_claroflava.jpg" height="250">
-  </p> 
-</td>
-<td> 
-  <p align="center">
-    <p>How about this one?</p>
-    <img alt="Routing" src="docs/images/example_lactarius_torminosus.jpg" height="250">
-  </p> 
-</td>
-</tr></table>
+![Russula claroflava (keltahapero) & Lactarius torminosus (karvarousku)](docs/images/mushi_examples.png)
 
-Can you eat either of them? TODO: Make mushroom images and titles a single image in GIMP
+<br/>
 
-<br>
+Should you pick either of them?
 
 Have you ever wandered around in the beautiful autumn forest looking for fungi food, but ended up spending most of your time staring at a book while getting inhabited by deer flies. If so, this tool might be just for you! It will help you deduce which mushroom is delicious and which kills you, while allowing you to spend more time marvelling the nature around you.
 
@@ -43,42 +30,75 @@ The app is targeted at novice mushroom hunters, and for now it seeks to identify
 
 ## 2 Motivation
 
-In the autumn of 2021, I did a lot of mushroom hunting trips with friends who were totally new to the sport. While many fungi were found, I realized that due to our combined curiosity we spend most of our time flipping through the pages of various mushroom books. The trips were still very fun and great for learning, but because I prefer to stare at colorful trees in the nature, and have a boring physicist's brain, I wanted to find a way to make the mushi identifying more efficient.
+In the autumn of 2021, I did a bunch of mushroom hunting trips with friends who were totally new to the sport. While we usually managed to get home with a fullish basket, due to our combined curiosity we spend most of our time in the forest flipping through the pages of various mushroom books. The trips were still fun and great for learning, but because I prefer staring at living trees and colorful nature, I felt like finding a way to make the mushi identifying more practical.
 
-By this time I had already been studying neural networks for over a year, so I figured I could solve the problem in a computer vision (CV) project. I started with a review of existing CV identifier apps. Some of the apps I found identified mushrooms as edible/non-edible which I found both detrimental to learning and dangerous - identifying mushrooms involves feeling, peeling, cutting and smelling. Others looked very promising with inbuilt descriptions but they were closed-source with ads and in-app purchases. This is when I started feeling the urge to develop an open-source app that would be truly free for any enthusiastic mushroom pickers.
+By this time I had already been studying neural networks for over a year, so I figured I could solve the problem in a computer vision (CV) project. I started with a review of existing CV identifier apps. Some of the apps I found identified mushrooms as edible/non-edible which I found quite detrimental to learning and dangerous - identifying mushrooms involves feeling, peeling, cutting and smelling. Others looked very promising with inbuilt descriptions but they were closed-source with ads and in-app purchases. This is when I started feeling the urge to develop an open-source app that would be truly free for any enthusiastic mushroom pickers.
 
-I wanted to build the app from the core to teach people to use mushroom books. I would design it to help beginners get into this great hobby, and its goal would be to eventually become obsolete to its users - once they learned to fully rely on a book and their experience. I decided to focus and tune the application on species common in Finnish conditions and have it return multiple suggestions for each photo to improve its utility. Overall, I felt excited to start a project that could be both a fun learning exercise and useful in practice.
+I wanted to build an app that would help and teach people to use mushroom books. I'd design it to help beginners get into this great hobby, and its ultimate goal would be to become obsolete to its users - once they learned to fully rely on a book and their experience. I decided to focus and tune the application on species common in Finnish conditions and have it return multiple suggestions for each photo to improve its utility. 
 
+Overall, I felt excited to start a project that could be both a fun learning exercise and useful in practice.
 And so, mushi-identifier was born.
 
 ## 3 Installation
 
-git pull repo  
-install poetry
+Here are the steps for installing the mushi-identifier. You can either download the entire project or just the web application.
 
-
-### Project
-
-1. poetry install reqs
-2. get data with "get_..." scripts, depending on what you want to load
-3. cd to directory
-4. start running scripts and stuff.
-
-### App
-
-1. install docker
+1. Clone (or download) this repository:
 
 ```bash
-# Folder
-cd app
+git pull https://github.com/jpusa/mushi-identifier
+```
+
+
+### Entire project
+
+2. Follow [these instructions](https://python-poetry.org/docs/) to install the dependency management tool Poetry.
+
+3. Install the project dependencies and open a virtual environment with:
+
+```bash
+cd mushi-identifier
+poetry install
+poetry shell
+```
+
+4. Download the [Danish Fungi 2020 dataset](https://sites.google.com/view/danish-fungi-dataset) (full, not mini) and extract it to ```data/00_raw/```.
+5. Run Python scripts (from the project root directory) to setup the *interim* and *processed* data directories:
+
+```bash
+cd mushi-identifier
+python3 src/data/s01_make_interim.py
+python3 src/data/s02_make_processed.py
+```
+
+6. Start training and tuning the model with the notebooks in ```notebooks/``` or the scripts under ```src/model/```. For example:
+
+```bash
+# Launch notebook for training the baseline model
+jupyterlab notebooks/01-jp-mushi-identifier-v1.ipynb
+```
+
+### Web app
+
+2. Follow [there instructions](https://docs.docker.com/get-docker/) to install Docker.
+
+3. Build and start the Docker container:
+```bash
+cd mushi-identifier/app
 # Build
 docker build -t mushi-identifier-app .
 # Start (the --rm flag is optional, but helpful for testing)
 docker run -d -p 8000:8000 --name mia --rm mushi-identifier-app
-# Check IP if needed (IPAddress)
-docker inspect mia
-# Connect to ip:8000 on browser
 ```
+4. Verify the local IP address of the container, if needed:
+```bash
+docker inspect mia
+# E.g. "IPAddress": "172.17.0.2"
+```
+
+5. Connect to the local IP address docs page (e.g.```172.17.0.2/docs```) on your browser to open the Swagger user interface.
+
+6. Upload an image to test the app.
 
 ## 4 Project structure
 
@@ -153,7 +173,7 @@ _About this: For a larger project with multiple developers I would use a proper 
 - [ ] Investigate the extra images present in the raw dataset
 
 ¹ The raw dataset is from Svampeatlas, so avoid scraping duplicate images, that could get split to both train and test sets biasing the test set.  
-² Think about this - the validation/test sets will need to be of the same distribution.
+² Think about this - the validatioqn/test sets will need to be of the same distribution.
 
 ### Model
 
@@ -177,7 +197,7 @@ _About this: For a larger project with multiple developers I would use a proper 
 **Base steps**
 
 - [x] Web app: Implement a simple REST API with Docker and FastAPI
-- [ ] Web app: Study security best practices and make the API public on a VPS.
+- [ ] Web app: Study security best practices and make the API public on a VPS. (Alternatively: deploy on Heroku or similar platform)
 - [ ] Mobile app: Optimize model for mobile - do weight pruning and quantization, convert to Tensorflow lite
 - [ ] Mobile app: Wrap the model in an app and deploy on mobile
 
