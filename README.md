@@ -32,7 +32,7 @@ The app is targeted at novice mushroom hunters, and for now it seeks to identify
 
 In the autumn of 2021, I did a bunch of mushroom hunting trips with friends who were totally new to the sport. While we usually managed to get home with a fullish basket, due to our combined curiosity we spend most of our time in the forest flipping through the pages of various mushroom books. The trips were still fun and great for learning, but because I prefer staring at living trees and colorful nature, I felt like finding a way to make the mushi identifying more practical.
 
-By this time I had already been studying neural networks for over a year, so I figured I could solve the problem in a computer vision (CV) project. I started with a review of existing CV identifier apps. Some of the apps I found identified mushrooms as edible/non-edible which I found quite detrimental to learning and dangerous - identifying mushrooms involves feeling, peeling, cutting and smelling. Others looked very promising with inbuilt descriptions but they were closed-source with ads and in-app purchases. This is when I started feeling the urge to develop an open-source app that would be truly free for any enthusiastic mushroom pickers.
+By this time I had already been studying neural networks for over a year, so I figured I could solve the problem in a computer vision (CV) project. I started with a review of existing CV identifier apps. Some of the apps I found identified mushrooms as edible/non-edible which I found quite detrimental to learning and dangerous - identifying mushrooms involves feeling, peeling, cutting and smelling. Others looked very promising with inbuilt descriptions but they were closed-source with ads and in-app purchases. This is when I started feeling the urge to develop an open-source app that would be free for any enthusiastic mushroom pickers.
 
 I wanted to build an app that would help and teach people to use mushroom books. I'd design it to help beginners get into this great hobby, and its ultimate goal would be to become obsolete to its users - once they learned to fully rely on a book and their experience. I decided to focus and tune the application on species common in Finnish conditions and have it return multiple suggestions for each photo to improve its utility. 
 
@@ -41,12 +41,12 @@ And so, mushi-identifier was born.
 
 ## 3 Installation
 
-Here are the steps for installing the mushi-identifier. You can either download the entire project or just the web application.
+Here are the steps for installing mushi-identifier. You can either download the entire project or just the web application.
 
 1. Clone (or download) this repository:
 
 ```bash
-git pull https://github.com/jpusa/mushi-identifier
+git clone https://github.com/jpusa/mushi-identifier.git
 ```
 
 
@@ -96,9 +96,11 @@ docker inspect mia
 # E.g. "IPAddress": "172.17.0.2"
 ```
 
-5. Connect to the local IP address docs page (e.g.```172.17.0.2/docs```) on your browser to open the Swagger user interface.
+5. Connect to the local IP address docs page (e.g.```172.17.0.2/docs```) on your browser to access the Swagger UI.
 
-6. Upload an image to test the app.
+6. Upload an image to receive a raw prediction ("/predict" -> "Try it out" -> "Browse..." -> "Execute"). For example:
+
+<img src="docs/images/fast_api_swagger_example.png" alt="example api prediction" width="300"/>
 
 ## 4 Project structure
 
@@ -115,7 +117,7 @@ The project structure is loosely based on the Cookiecutter data science [link] t
 ├── models                 # Saved models
 ├── notebooks              # Jupyter notebooks (EDA, model presentation)
 └── src
-    ├── data               # Python code for data manipulation (scraping, cleaning, loading)
+    ├── data               # Python code for data manipulation (scraping, shaping, loading)
     └── model              # Python code for model training and predictions
 ```
 
