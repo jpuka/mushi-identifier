@@ -30,11 +30,11 @@ The app is targeted at novice mushroom hunters, and for now it seeks to identify
 
 ## 2 Motivation
 
-In the autumn of 2021, I did a bunch of mushroom hunting trips with friends who were totally new to the sport. While we usually managed to get home with a fullish basket, due to our combined curiosity we spend most of our time in the forest flipping through the pages of various mushroom books. The trips were still fun and great for learning, but because I prefer staring at living trees and colorful nature, I felt like finding a way to make the mushi identifying more practical.
+In the autumn of 2021, I did a bunch of mushroom hunting trips with friends who were totally new to the sport. While we usually managed to get home with an ok catch, due to our combined curiosity we spend most of our time in the forest flipping through the pages of various mushroom books. The trips were still fun and great for learning, but because I prefer staring at living trees and colorful nature, I felt like finding a way to make the mushi identifying more practical.
 
 By this time I had already been studying neural networks for over a year, so I figured I could solve the problem in a computer vision (CV) project. I started with a review of existing CV identifier apps. Some of the apps I found identified mushrooms as edible/non-edible which I found quite detrimental to learning and dangerous - identifying mushrooms involves feeling, peeling, cutting and smelling. Others looked very promising with inbuilt descriptions but they were closed-source with ads and in-app purchases. Consequently, I felt like starting an open-source project that would be useful for me and maybe, in the distant future, also for other enthusiastic mushroom pickers.
 
-I wanted to build an app that would help and teach its users to use mushroom books. I'd design it to help beginners get into this great hobby, and its ultimate goal would be to become obsolete to the users - once they learned to fully rely on a book and their experience. I decided to focus and tune the application on species common in Finnish conditions and have it return multiple suggestions for each photo to improve its utility. 
+I wanted to build an app that would make mushroom books more convenient to use. Ideally, the app would help beginners get into mushroom picking, and its ultimate goal would be to become obsolete to the users - once they learned to fully rely on a book and their experience. I decided to focus and tune the application on species common in Finnish conditions and have it return multiple suggestions for each photo to improve its utility. 
 
 Overall, I felt excited to start a project that could be both a fun learning exercise and practical. And so, mushi-identifier was born.
 
@@ -134,11 +134,11 @@ During my initial review, I also found the smaller  [2018 FGVCx Fungi Classifica
 
 ### Model
 
-Mushi-identifier is based on a convolutional neural network (CNN). The image recognition task is defined as single-label multi-class classification, since the user is expected to submit only one mushroom species in each image. Due to a shortage of data, I'm using transfer learning with feature extraction. Once I have enough data, I will switch to fine-tuning to improve the performance.
+Mushi-identifier is based on a convolutional neural network (CNN). The image recognition task is defined as single-label multiclass classification, since the user is expected to submit only one mushroom species in each image. Due to a shortage of data, I'm using transfer learning with feature extraction. Once I have enough data, I will switch to fine-tuning to improve the performance.
 
-The base network is [MobileNetV2](https://arxiv.org/abs/1801.04381) taught with ImageNet. I chose MobileNet, since it runs well on mobile devices, which are the target deployment platform. Furthermore, it is fast to train - I currently don't have any computing servers at my disposal so I am working with Google Colab GPUs.
+The base network is [MobileNetV2](https://arxiv.org/abs/1801.04381) pre-trained with ImageNet. I chose MobileNet, since it runs well on mobile devices, which are the target deployment platform. Furthermore, it is fast to train - I currently don't have any computing servers at my disposal so I am working with Google Colab GPUs.
 
-See the notebook at ```notebooks/00-jp-mushi-identifier-v1.ipynb``` for model building details such as metrics, cost, callbacks and hyperparameters.
+See the notebook at ```notebooks/01-jp-mushi-identifier-v1.ipynb``` (TODO: and future model notebooks) for model building details such as metrics, cost, callbacks and hyperparameters.
 
 ### Deployment
 
@@ -153,7 +153,7 @@ I have chosen to use [Poetry](https://python-poetry.org/) as the packaging / dep
 
 This roadmap provides a quick overview of the project development stage. The roadmap will be updated as the project progresses.
 
-_About this: For a larger project with multiple developers I would use a proper project management environment that links the roadmap to issues/commits. For this project, I find that having the roadmap here is sufficient and easiest for the readers._
+_About this: Since this project is at a very early stage, and I'm the only developer, I just put the roadmap here where it's easy to see. If the project ever gets more developers, I might start using a project management environment that links the roadmap to issues/commits._
 
 ### Data
 
