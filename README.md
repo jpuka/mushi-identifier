@@ -22,7 +22,7 @@ Have you ever wandered around in the beautiful autumn forest looking for fungi f
 
 Mushi-identifier is an image-recognition application (web & mobile) that identifies mushroom species from photos submitted by the user. After receiving a photo, the app runs it through a convolutional neural network (CNN) and returns the names and confidence scores of the top three mushrooms that most closely resemble the species in the image.
 
-Mushi-identifier's predictions should always be verified with a recent mushroom book. The core idea of the app is to allow the user to quickly find the spotted mushroom in the book's glossary - instead of browsing through endless pages looking for images of the species, the user can simply check the app's three predictions in the order of confidence. 
+Mushi-identifier's predictions should always be verified with a recent mushroom book. The core idea of the app is to allow the user to quickly find the spotted mushroom in the book's glossary - instead of browsing through endless pages looking for images of the species, they can simply check the app's three predictions in the order of confidence. 
 
 The app is targeted at novice mushroom hunters, and for now it seeks to identify the 26 edible mushrooms species recommended by the [Finnish food authority](https://www.ruokavirasto.fi/henkiloasiakkaat/tietoa-elintarvikkeista/elintarvikeryhmat/ruokasienet/suositeltavat-ruokasienet/). These species are common and easy to verify with a book even for beginners.
 
@@ -134,7 +134,7 @@ During my initial review, I also found the smaller  [2018 FGVCx Fungi Classifica
 
 ### Model
 
-Mushi-identifier is based on a convolutional neural network (CNN). The image recognition task is defined as single-label multiclass classification, since the user is expected to submit only one mushroom species in each image. Due to a shortage of data, I'm using transfer learning with feature extraction. Once I have enough data, I will switch to fine-tuning to improve the performance.
+Mushi-identifier is based on a convolutional neural network (CNN). The image recognition task is defined as single-label multiclass classification, since the user is expected to submit only one mushroom species in each image. Due to a shortage of data, I'm training the first (baseline) model with transfer learning with feature extraction. If it seems like there is enough data, I will switch to fine-tuning to improve the performance.
 
 The base network is [MobileNetV2](https://arxiv.org/abs/1801.04381) pre-trained with ImageNet. I chose MobileNet, since it runs well on mobile devices, which are the target deployment platform. Furthermore, it is fast to train - I currently don't have any computing servers at my disposal so I am working with Google Colab GPUs.
 
