@@ -1,4 +1,4 @@
-# create predictions with the trained model
+# Create predictions with the trained model
 
 import pathlib
 

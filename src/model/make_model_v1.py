@@ -1,5 +1,5 @@
 # Build and train the baseline model, visualize the results. There's also a notebook
-# with the same code.
+# with similar code.
 
 ## Colab initialization
 # from google.colab import drive
@@ -19,16 +19,16 @@ from src.model.data_funcs import load_dataset, create_confusion_matrix, \
 
 ## Paths (relative to project root)
 
-# Model name
+# Model name - used for saving
 model_name = "mushi_identifier_v11"
 
-# Processed data directory
+# Processed data directory (relative to project root)
 path_processed_dir = pathlib.Path(
     # "drive/MyDrive/colab_data/02_processed/"
     "data/02_processed/"
 )
 
-# Model directory
+# Model directory (relative to project root)
 path_model_dir = pathlib.Path(
     # "drive/MyDrive/colab_models/"
     "models/"
