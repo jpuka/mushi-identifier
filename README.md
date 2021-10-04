@@ -134,7 +134,7 @@ During my initial review, I also found the smaller  [2018 FGVCx Fungi Classifica
 
 ### Model
 
-Mushi-identifier is based on a convolutional neural network (CNN). The image recognition task is defined as single-label multiclass classification, since the user is expected to submit only one mushroom species in each image. Due to a shortage of data, I'm training the first (baseline) model with transfer learning with feature extraction. If it seems like there is enough data, I will switch to fine-tuning to improve the performance.
+Mushi-identifier is based on a convolutional neural network (CNN). The image recognition task is defined as single-label multiclass classification, since the user is expected to submit only one mushroom species in each image. Due to a shortage of data, I'm training the first (baseline) model with transfer learning with feature extraction. If it seems like there is enough data, I will carry on to fine-tuning to improve the performance.
 
 The base network is [MobileNetV2](https://arxiv.org/abs/1801.04381) pre-trained with ImageNet. I chose MobileNet, since it runs well on mobile devices, which are the target deployment platform. Furthermore, it is fast to train - I currently don't have any computing servers at my disposal so I am working with Google Colab GPUs.
 
