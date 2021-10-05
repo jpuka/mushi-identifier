@@ -189,7 +189,7 @@ _About this: Since this project is at a very early stage, and I'm the only devel
 
 **Additional steps**
  
-- [ ] Add macro-averaged F1 score to metrics, since it should work well for long-tailed distributions
+- [ ] Add macro-averaged F1 score to metrics, since it should work well for long-tailed class distributions
 - [ ] Try MobileNetV3 as the base model
 - [ ] Try fine-tuning instead of feature extraction, once there is enough data
 
