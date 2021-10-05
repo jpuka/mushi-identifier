@@ -109,6 +109,7 @@ Now you are able to request predictions from the model at "IPAddress/predict" (e
 The project structure is loosely based on the [Cookiecutter data science](https://drivendata.github.io/cookiecutter-data-science/) template.
 
 ```bash
+├── app                    # Web application: REST API set up with Docker and FastAPI
 ├── data
 │   ├── 00_external        # Web-scraped images to supplement raw data, mushroom classes
 │   ├── 00_raw             # Danish Fungi 2020 dataset: images and metadata
