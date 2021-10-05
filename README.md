@@ -184,7 +184,7 @@ _About this: Since this project is at a very early stage, and I'm the only devel
 - [x] Build, train and save a baseline model
 - [x] Write functions for plotting and prediction
 - [ ] Implement k-fold cross-validation to increase reliability of validation metrics and to allow hyperparameter tuning without overfitting validation data
-- [ ] Tune hyperparameters
+- [ ] Tune hyperparameters (learning rate, possibly batch size)
 - [ ] Build, train and save an improved model (repeatable)
 
 **Additional steps**
