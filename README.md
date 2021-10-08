@@ -183,15 +183,16 @@ _About this: Since this project is at a very early stage, and I'm the only devel
 - [x] Review literature and make initial modelling choices (architecture, metrics, baseline performance, hyperparameters)
 - [x] Build, train and save a baseline model
 - [x] Write functions for plotting and prediction
-- [ ] Implement k-fold cross-validation to increase reliability of validation metrics and to allow hyperparameter tuning without overfitting validation data
-- [ ] Tune hyperparameters (learning rate, possibly batch size)
+- [ ] Add macro-averaged F1 score to metrics, since it should work well for long-tailed class distributions
+- [ ] Improve model: Use a dynamically decreasing learning rate
+- [ ] Improve model: Try fine-tuning instead of feature extraction
 - [ ] Build, train and save an improved model (repeatable)
 
 **Additional steps**
  
-- [ ] Add macro-averaged F1 score to metrics, since it should work well for long-tailed class distributions
 - [ ] Try MobileNetV3 as the base model
-- [ ] Try fine-tuning instead of feature extraction, once there is enough data
+- [ ] Implement k-fold cross-validation to increase reliability of validation metrics and to allow hyperparameter tuning without overfitting validation data
+- [ ] Tune hyperparameters (learning rate, possibly batch size)
 
 ### Deployment
 
