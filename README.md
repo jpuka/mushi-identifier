@@ -71,7 +71,7 @@ python3 src/data/s01_make_interim.py
 python3 src/data/s02_make_processed.py
 ```
 
-6. Start training and tuning the model with the notebooks in ```notebooks/``` or the scripts under ```src/model/```. For example:
+6. Start training and tuning the model with the notebooks in ```notebooks/```. For example:
 
 ```bash
 # Launch notebook for training the baseline model
@@ -183,7 +183,7 @@ _About this: Since this project is at a very early stage, and I'm the only devel
 - [x] Review literature and make initial modelling choices (architecture, metrics, baseline performance, hyperparameters)
 - [x] Build, train and save a baseline model
 - [x] Write functions for plotting and prediction
-- [ ] Add macro-averaged F1 score to metrics, since it should work well for long-tailed class distributions
+- [x] Add precision, recall and macro-averaged F1 score to evaluation metrics, since they are informative even for long-tailed class distributions
 - [ ] Improve model: Use a dynamically decreasing learning rate
 - [ ] Improve model: Try fine-tuning instead of feature extraction
 - [ ] Build, train and save an improved model (repeatable)
@@ -193,6 +193,7 @@ _About this: Since this project is at a very early stage, and I'm the only devel
 - [ ] Try MobileNetV3 as the base model
 - [ ] Implement k-fold cross-validation to increase reliability of validation metrics and to allow hyperparameter tuning without overfitting validation data
 - [ ] Tune hyperparameters (learning rate, possibly batch size)
+- [ ] Add macro-averaged F1 score to metrics tracked during training
 
 ### Deployment
 
