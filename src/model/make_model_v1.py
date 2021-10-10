@@ -1,5 +1,7 @@
-# Build and train the baseline model, visualize the results. There's also a notebook
-# with similar code.
+# Build and train the baseline model, visualize the results.
+
+# NOTE: Deprecated for now, was used for building MushiIdentifierV1, before turning the
+# code into a notebook.
 
 ## Colab initialization
 # from google.colab import drive
