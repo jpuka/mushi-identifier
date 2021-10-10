@@ -7,6 +7,7 @@ import numpy as np
 import pandas as pd
 import tensorflow as tf
 from seaborn import heatmap
+from sklearn.metrics import classification_report
 from tensorflow.keras.preprocessing import image_dataset_from_directory
 
 
@@ -129,14 +130,13 @@ def plot_loss_accuracy(model_history=None, from_logs=False, path_training_logs=N
     # plt.savefig("loss_accuracy.png")
 
 
-def create_confusion_matrix(model, ds):
+def find_predicted_true(model, ds):
     """
-    Compute a confusion matrix from a dataset object by getting predicted and true
-    labels from batches of data.
+    Get predicted and true labels by looping over batches of the dataset.
 
-    :param model: Trained model.
-    :param ds: Dataset to find predicted labels and true labels for.
-    :return: Confusion matrix computed for the dataset.
+    :param model: Trained model used for predictions
+    :param ds: Dataset for which to find predicted labels and true labels.
+    :return: Predicted and true labels
     """
 
     # Initialize predicted and true labels
@@ -149,10 +149,44 @@ def create_confusion_matrix(model, ds):
         predicted_labels = np.append(predicted_labels, prediction)
         true_labels = np.append(true_labels, label_batch)
 
+    return predicted_labels, true_labels
+
+
+def create_confusion_matrix(model, ds):
+    """
+    Compute a confusion matrix based on a trained model and a dataset object.
+
+    :param model: Trained model.
+    :param ds: Dataset for which to plot predicted labels and true labels.
+    :return: Confusion matrix computed for the dataset.
+    """
+
+    # Find predicted and true labels from the dataset
+    predicted_labels, true_labels = find_predicted_true(model, ds)
+
     # Compute the confusion matrix
     confusion_matrix = tf.math.confusion_matrix(true_labels, predicted_labels).numpy()
 
     return confusion_matrix
+
+
+def create_class_report(model, ds, classes):
+    """
+    Create a classification report based on a trained model and a dataset object.
+
+    :param model: Trained model.
+    :param ds: Dataset for which to create classification report.
+    :param classes:
+    :return:
+    """
+    # Find predicted and true labels from the dataset
+    predicted_labels, true_labels = find_predicted_true(model, ds)
+
+    # Compute the classification report
+    class_report = classification_report(predicted_labels, true_labels,
+                                         target_names=classes, zero_division=0)
+
+    return class_report
 
 
 def plot_confusion_matrix(confusion_matrix, classes, normalize=True):
@@ -178,8 +212,8 @@ def plot_confusion_matrix(confusion_matrix, classes, normalize=True):
     plt.figure(figsize=(16, 14))
     heatmap(confusion_matrix, xticklabels=classes, yticklabels=classes, annot=True,
             cmap="Blues", fmt=fmt)
-    plt.xlabel("Prediction")
-    plt.ylabel("Label")
+    plt.xlabel("Predicted label")
+    plt.ylabel("True label")
 
     # Show the figure
     plt.show()
