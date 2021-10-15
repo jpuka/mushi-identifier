@@ -194,7 +194,7 @@ _About this: Since this project is at a very early stage, and I'm the only devel
 - [ ] Implement k-fold cross-validation to increase reliability of validation metrics and to allow hyperparameter tuning without overfitting validation data
 - [ ] Tune hyperparameters (learning rate, possibly batch size)
 - [ ] Add macro-averaged F1 score to metrics tracked during training
-- [ ]Train with mixed precision turned on for speedup.
+- [ ] Train with mixed precision turned on for speedup.
 
 ### Deployment
 
