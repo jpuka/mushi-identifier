@@ -184,17 +184,18 @@ _About this: Since this project is at a very early stage, and I'm the only devel
 - [x] Build, train and save a baseline model
 - [x] Write functions for plotting and prediction
 - [x] Add precision, recall and macro-averaged F1 score to evaluation metrics, since they are informative even for long-tailed class distributions
-- [ ] Improve model: Use a dynamically decreasing learning rate
+- [ ] Implement k-fold cross-validation (by image filenames) to increase reliability of validation metrics and to allow hyperparameter tuning without overfitting validation data
+- [ ] Improve model: Try a dynamically decreasing learning rate
 - [ ] Improve model: Try fine-tuning instead of feature extraction
-- [ ] Build, train and save an improved model (repeatable)
+- [ ] Improve model: Tune hyperparameters (try at least learning rate, batch size)
 
 **Additional steps**
- 
+
+- [ ] Create a simple classifier model before the mushroom identifier for recognizing if the image is a mushroom or not
+- [ ] Implement an ensemble model with the NN and LightGBM (for latter: use metadata features that can be inferred by users) to increase prediction accuracy
+- [ ] Try weighing the cost function for minority classes to compensate for imbalances 
 - [ ] Try MobileNetV3 as the base model
-- [ ] Implement k-fold cross-validation to increase reliability of validation metrics and to allow hyperparameter tuning without overfitting validation data
-- [ ] Tune hyperparameters (learning rate, possibly batch size)
-- [ ] Add macro-averaged F1 score to metrics tracked during training
-- [ ] Train with mixed precision turned on for speedup.
+- [ ] Train with mixed precision turned on for speedup
 
 ### Deployment
 
